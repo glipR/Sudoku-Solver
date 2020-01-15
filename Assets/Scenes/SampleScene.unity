@@ -278,7 +278,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -459,6 +459,8 @@ MonoBehaviour:
   ThickLine: {fileID: 3492692245259713428, guid: cb698af316bbe8f428bad1e005a0f1fc,
     type: 3}
   ThinLine: {fileID: 8677481663757863381, guid: cd5c8b03b1f671946b64c3b79e0c9091,
+    type: 3}
+  BoxObject: {fileID: 789369017189365435, guid: 3d6a6a08a7cac974c85a8a6f55a4abd7,
     type: 3}
 --- !u!1 &1953501585
 GameObject:
