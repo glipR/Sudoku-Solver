@@ -49,11 +49,19 @@ public class BoxController : MonoBehaviour {
     }
 
     public void SetSize(Vector2 size) {
+        // Set the collider and box size.
         var rt = GetComponent<RectTransform>();
         rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x);
         rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y);
         var bc = GetComponent<BoxCollider2D>();
         bc.size = size;
+        // Set the inner text sizes.
+        var fn = transform.Find("FullNum").GetComponent<RectTransform>();
+        fn.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x);
+        fn.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y);
+        var cn = transform.Find("CentreNum").GetComponent<RectTransform>();
+        cn.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x * 0.7f);
+        cn.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y * 0.4f);
     }
 
     private void OnMouseDown() {
