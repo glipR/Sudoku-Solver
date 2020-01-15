@@ -8,7 +8,15 @@ public class BoxController : MonoBehaviour {
 
     public (int x, int y) position;
     public Color currentColor = new Color(1, 1, 1, 1);
-    public string currentCentre = "";
+    public string currentFull = "";
+    public List<int> cornerElements;
+    public List<int> centreElements;
+
+    public bool centreMode;
+
+    private void Start() {
+        centreMode = false;
+    }
 
     public void SetColor(Color c, bool update) {
         if (update)
@@ -17,10 +25,27 @@ public class BoxController : MonoBehaviour {
         img.color = c;
     }
 
-    public void SetCentre(string s) {
-        currentCentre = s;
-        var txt = transform.Find("CentreNum").GetComponent<TextMeshProUGUI>();
+    public void SetFull(string s) {
+        currentFull = s;
+        var txt = transform.Find("FullNum").GetComponent<TextMeshProUGUI>();
         txt.text = s;
+        var centre = transform.Find("CentreNum").GetComponent<TextMeshProUGUI>();
+        centre.text = "";
+        centreMode = s != "";
+    }
+
+    public void ToggleCentre(int e) {
+        int found = -1;
+        for (int i=0; i<centreElements.Count; i++) if (centreElements[i] == e) found = i;
+        if (found != -1)
+            centreElements.RemoveAt(found);
+        else centreElements.Add(e);
+        string x = "";
+        foreach (var v in centreElements) x = x + v.ToString();
+        if (!centreMode) {
+            var text = transform.Find("CentreNum").GetComponent<TextMeshProUGUI>();
+            text.text = x;
+        }
     }
 
     public void SetSize(Vector2 size) {

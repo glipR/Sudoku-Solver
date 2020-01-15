@@ -26,9 +26,17 @@ public class BoxSelectionManager : MonoBehaviour {
     }
 
     private void Update() {
+        if (Input.GetKeyDown(KeyCode.Z)) currentSelection = SelectionVersion.FULL;
+        if (Input.GetKeyDown(KeyCode.X)) currentSelection = SelectionVersion.CORNER;
+        if (Input.GetKeyDown(KeyCode.C)) currentSelection = SelectionVersion.CENTRE;
+        if (Input.GetKeyDown(KeyCode.V)) currentSelection = SelectionVersion.COLOR;
+
         for (int i=1; i<keyCodes.Length; i++) {
             if (Input.GetKeyDown(keyCodes[i])) {
-                foreach (var box in selected) box.SetCentre(i.ToString());
+                if (currentSelection == SelectionVersion.FULL)
+                    foreach (var box in selected) box.SetFull(i.ToString());
+                if (currentSelection == SelectionVersion.CENTRE)
+                    foreach (var box in selected) box.ToggleCentre(i);
             }
         }
     }
