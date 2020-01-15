@@ -15,7 +15,7 @@ public class BoxSelectionManager : MonoBehaviour {
 
     public static BoxSelectionManager instance;
     [SerializeField]
-    private Color highlightColor;
+    private Color highlightColor = new Color(0.5f, 1, 1, 1);
 
     private List<BoxController> selected;
     private SelectionVersion currentSelection = SelectionVersion.FULL;
