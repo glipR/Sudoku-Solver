@@ -85,20 +85,23 @@ public class VisualBoardController : MonoBehaviour {
     }
 
     private void GenerateBoxes() {
-        boxes = new BoxController[(settings.numHorizontalThicks - 1) * (settings.numHorizontalThins - 1), (settings.numVerticalThicks - 1) * (settings.numVerticalThins + 1)];
+        boxes = new BoxController[(settings.numHorizontalThicks - 1) * (settings.numHorizontalThins + 1), (settings.numVerticalThicks - 1) * (settings.numVerticalThins + 1)];
         for (int thickH=0; thickH < settings.numHorizontalThicks-1; thickH++) {
             for (int thickV=0; thickV < settings.numVerticalThicks-1; thickV++) {
                 for (int thinH=0; thinH < settings.numHorizontalThins+1; thinH++) {
                     for (int thinV=0; thinV < settings.numVerticalThins+1; thinV++) {
                         RectTransform box = Instantiate(BoxObject, backdrop.transform).GetComponent<RectTransform>();
-                        box.gameObject.name = "Box (" + (thickH * (settings.numHorizontalThins + 1) + thinH) + ", " + (thickV * (settings.numVerticalThins + 1) + thinV) + ")";
                         box.anchoredPosition = new Vector2(
                             thickWidth + (smallLineLengths.x - thinWidth) / 2f + largeLineLengths.x * thickH + smallLineLengths.x * thinH,
                             -thickWidth - (smallLineLengths.y - thinWidth) / 2f - largeLineLengths.y * thickV - smallLineLengths.y * thinV
                         );
                         box.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, smallLineLengths.y - thinWidth);
                         box.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, smallLineLengths.x - thinWidth);
-                        boxes[thickH * (settings.numHorizontalThins + 1) + thinH, thickV * (settings.numVerticalThins + 1) + thinV] = box.GetComponent<BoxController>();
+                        int inx = thickH * (settings.numHorizontalThins + 1) + thinH;
+                        int iny = thickV * (settings.numVerticalThins + 1) + thinV;
+                        box.gameObject.name = "Box (" + (inx+1) + ", " + (iny+1) + ")";
+                        boxes[inx, iny] = box.GetComponent<BoxController>();
+                        boxes[inx, iny].position = (inx, iny);
                     }
                 }
             }
