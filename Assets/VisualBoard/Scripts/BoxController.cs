@@ -6,6 +6,8 @@ using TMPro;
 
 public class BoxController : MonoBehaviour {
 
+    public static float cornerRatio = 0.3f;
+
     public (int x, int y) position;
     public Color currentColor = new Color(1, 1, 1, 1);
     public string currentFull = "";
@@ -13,6 +15,17 @@ public class BoxController : MonoBehaviour {
     public List<int> centreElements;
 
     public bool centreMode;
+
+    private Vector2[] anchors = {
+        new Vector2(0, 0),
+        new Vector2(1, 0),
+        new Vector2(0, -1),
+        new Vector2(1, -1),
+        new Vector2(0.5f, 0),
+        new Vector2(0.5f, -1),
+        new Vector2(0, 0.5f),
+        new Vector2(1, 0.5f)
+    };
 
     private void Start() {
         centreMode = false;
@@ -35,16 +48,32 @@ public class BoxController : MonoBehaviour {
     }
 
     public void ToggleCentre(int e) {
-        int found = -1;
-        for (int i=0; i<centreElements.Count; i++) if (centreElements[i] == e) found = i;
-        if (found != -1)
-            centreElements.RemoveAt(found);
-        else centreElements.Add(e);
+        int index = centreElements.BinarySearch(e);
+        if (index >= 0)
+            centreElements.RemoveAt(index);
+        else {
+            // Insert in Order.
+            centreElements.Insert(~index, e);
+        }
         string x = "";
         foreach (var v in centreElements) x = x + v.ToString();
         if (!centreMode) {
             var text = transform.Find("CentreNum").GetComponent<TextMeshProUGUI>();
             text.text = x;
+        }
+    }
+
+    public void ToggleCorner(int e) {
+        int index = cornerElements.BinarySearch(e);
+        if (index >= 0)
+            cornerElements.RemoveAt(index);
+        else {
+            // Insert in Order.
+            cornerElements.Insert(~index, e);
+        }
+        for (int i=0; i<8; i++) {
+            var t = transform.Find("Corner" + (i+1)).GetComponent<TextMeshProUGUI>();
+            t.text = i < cornerElements.Count ? cornerElements[i].ToString() : "";
         }
     }
 
@@ -62,6 +91,24 @@ public class BoxController : MonoBehaviour {
         var cn = transform.Find("CentreNum").GetComponent<RectTransform>();
         cn.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x * 0.7f);
         cn.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y * 0.4f);
+        for (int i=0; i<8; i++) {
+            var t = transform.Find("Corner" + (i+1)).GetComponent<RectTransform>();
+            t.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x * cornerRatio);
+            t.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y * cornerRatio);
+            t.anchoredPosition = anchors[i] + (
+                anchors[i].x == 0 ? (
+                    new Vector2(size.x * cornerRatio * 0.5f, 0)
+                ) : (
+                    anchors[i].x == 1 ? new Vector2(-size.x * cornerRatio * 0.5f, 0) : new Vector2(0, 0)
+                )
+            ) + (
+                anchors[i].y == 0 ? (
+                    new Vector2(0, -size.y * cornerRatio * 0.5f)
+                ) : (
+                    anchors[i].y == -1 ? new Vector2(0, size.y * cornerRatio * 0.5f) : new Vector2(0, 0)
+                )
+            );
+        }
     }
 
     private void OnMouseDown() {

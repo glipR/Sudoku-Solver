@@ -35,6 +35,8 @@ public class BoxSelectionManager : MonoBehaviour {
             if (Input.GetKeyDown(keyCodes[i])) {
                 if (currentSelection == SelectionVersion.FULL)
                     foreach (var box in selected) box.SetFull(i.ToString());
+                if (currentSelection == SelectionVersion.CORNER)
+                    foreach (var box in selected) box.ToggleCorner(i);
                 if (currentSelection == SelectionVersion.CENTRE)
                     foreach (var box in selected) box.ToggleCentre(i);
             }
