@@ -95,8 +95,7 @@ public class VisualBoardController : MonoBehaviour {
                             thickWidth + (smallLineLengths.x - thinWidth) / 2f + largeLineLengths.x * thickH + smallLineLengths.x * thinH,
                             -thickWidth - (smallLineLengths.y - thinWidth) / 2f - largeLineLengths.y * thickV - smallLineLengths.y * thinV
                         );
-                        box.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, smallLineLengths.y - thinWidth);
-                        box.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, smallLineLengths.x - thinWidth);
+                        box.gameObject.GetComponent<BoxController>().SetSize(new Vector2(smallLineLengths.x - thinWidth, smallLineLengths.y - thinWidth));
                         int inx = thickH * (settings.numHorizontalThins + 1) + thinH;
                         int iny = thickV * (settings.numVerticalThins + 1) + thinV;
                         box.gameObject.name = "Box (" + (inx+1) + ", " + (iny+1) + ")";
