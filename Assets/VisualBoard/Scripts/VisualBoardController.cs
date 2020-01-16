@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
+[System.Serializable]
 public class VisualBoardSettings {
     public int numHorizontalThicks = 4;
     public int numVerticalThicks = 4;
@@ -48,7 +50,10 @@ public class VisualBoardController : MonoBehaviour {
 
     private void GenerateDisplayConstants() {
         backdrop = transform.Find("WhiteBackdrop").gameObject;
-        backdropDimensions = backdrop.GetComponent<RectTransform>().sizeDelta;
+        backdropDimensions = GetComponent<RectTransform>().sizeDelta;
+        var rt = backdrop.GetComponent<RectTransform>();
+        rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, backdropDimensions.x);
+        rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, backdropDimensions.y);
         thickWidth = ThickLine.GetComponent<RectTransform>().sizeDelta.y;
         thinWidth = ThinLine.GetComponent<RectTransform>().sizeDelta.y;
         beginningVerticalPos = new Vector2(0, -thickWidth / 2f);
@@ -58,7 +63,6 @@ public class VisualBoardController : MonoBehaviour {
     }
 
     private void GenerateBorders() {
-
         // Create the thick lines, and then each thin line.
         for (int thickIndex=0; thickIndex<settings.numVerticalThicks; thickIndex++) {
             RectTransform top_line = Instantiate(ThickLine, backdrop.transform).GetComponent<RectTransform>();
@@ -116,6 +120,22 @@ public class VisualBoardController : MonoBehaviour {
             entries[i,j] = boxes[i, j].currentVisibleFull;
         }
         return entries;
+    }
+
+    // This will later be handled by a separate selection panel, but for now it's fine.
+    public void SaveBoard() {
+        var obj = new BoardSerializer.SerializedBoard(this);
+        string fileName = "Testing/board.json";
+        StreamWriter sr = File.CreateText(fileName);
+        sr.WriteLine(JsonUtility.ToJson(obj));
+        sr.Close();
+    }
+
+    public void LoadBoard() {
+        string fileName = "Testing/board.json";
+        StreamReader sr = File.OpenText(fileName);
+        BoardSerializer.SerializedBoard obj = JsonUtility.FromJson<BoardSerializer.SerializedBoard>(sr.ReadToEnd());
+        obj.DeserializeToBoard(this);
     }
 
 }

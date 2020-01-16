@@ -17,6 +17,7 @@ public class BoxController : MonoBehaviour {
     public string currentVisibleFull { get { return centreMode ? currentFull : ""; } }
 
     public bool centreMode;
+    public bool given = false;
 
     private Vector2[] anchors = {
         new Vector2(0, 0),
@@ -41,6 +42,7 @@ public class BoxController : MonoBehaviour {
     }
 
     public void SetFull(string s) {
+        if (given) return;
         currentFull = s;
         var txt = transform.Find("FullNum").GetComponent<TextMeshProUGUI>();
         txt.text = s;
@@ -56,6 +58,7 @@ public class BoxController : MonoBehaviour {
     }
 
     public void ToggleCentre(int e) {
+        if (given) return;
         int index = centreElements.BinarySearch(e);
         if (index >= 0)
             centreElements.RemoveAt(index);
@@ -72,6 +75,7 @@ public class BoxController : MonoBehaviour {
     }
 
     public void ToggleCorner(int e) {
+        if (given) return;
         int index = cornerElements.BinarySearch(e);
         if (index >= 0)
             cornerElements.RemoveAt(index);
@@ -121,6 +125,7 @@ public class BoxController : MonoBehaviour {
     }
 
     public void Clear() {
+        if (given) return;
         this.currentColor = new Color(1, 1, 1, 1);
         this.centreElements.Clear();
         this.cornerElements.Clear();
