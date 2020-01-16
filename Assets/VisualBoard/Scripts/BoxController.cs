@@ -14,6 +14,8 @@ public class BoxController : MonoBehaviour {
     public List<int> cornerElements;
     public List<int> centreElements;
 
+    public string currentVisibleFull { get { return centreMode ? currentFull : ""; } }
+
     public bool centreMode;
 
     private Vector2[] anchors = {

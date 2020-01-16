@@ -8,6 +8,9 @@ public class VisualBoardSettings {
     public int numHorizontalThins = 2;
     public int numVerticalThins = 2;
 
+    public int numHorizontal { get { return (numHorizontalThicks - 1) * (numHorizontalThins + 1); } }
+    public int numVertical { get { return (numVerticalThicks - 1) * (numHorizontalThins + 1); } }
+
     public VisualBoardSettings() {
 
     }
@@ -85,7 +88,7 @@ public class VisualBoardController : MonoBehaviour {
     }
 
     private void GenerateBoxes() {
-        boxes = new BoxController[(settings.numHorizontalThicks - 1) * (settings.numHorizontalThins + 1), (settings.numVerticalThicks - 1) * (settings.numVerticalThins + 1)];
+        boxes = new BoxController[settings.numHorizontal, settings.numVertical];
         for (int thickH=0; thickH < settings.numHorizontalThicks-1; thickH++) {
             for (int thickV=0; thickV < settings.numVerticalThicks-1; thickV++) {
                 for (int thinH=0; thinH < settings.numHorizontalThins+1; thinH++) {
@@ -105,6 +108,14 @@ public class VisualBoardController : MonoBehaviour {
                 }
             }
         }
+    }
+
+    public string[,] GetEntries() {
+        var entries = new string[settings.numHorizontal, settings.numVertical];
+        for (int i=0; i<settings.numHorizontal; i++) for (int j=0; j<settings.numVertical; j++) {
+            entries[i,j] = boxes[i, j].currentVisibleFull;
+        }
+        return entries;
     }
 
 }
