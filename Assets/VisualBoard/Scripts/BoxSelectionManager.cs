@@ -65,4 +65,13 @@ public class BoxSelectionManager : MonoBehaviour {
         }
     }
 
+    public void EnsureSelected(BoxController select) {
+        int found = -1;
+        for (int i=0; i<selected.Count; i++) if (selected[i].position == select.position) found = i;
+        if (found == -1) {
+            selected.Add(select);
+            select.SetColor(highlightColor, false);
+        }
+    }
+
 }

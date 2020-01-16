@@ -131,4 +131,8 @@ public class BoxController : MonoBehaviour {
         else BoxSelectionManager.instance.SetSelected(this);
     }
 
+    private void OnMouseEnter() {
+        if (Input.GetMouseButton(0)) BoxSelectionManager.instance.EnsureSelected(this);
+    }
+
 }
