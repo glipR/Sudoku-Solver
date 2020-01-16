@@ -52,4 +52,16 @@ public class BoxSelectionManager : MonoBehaviour {
         selected[0].SetColor(highlightColor, false);
     }
 
+    public void ToggleSelected(BoxController select) {
+        int found = -1;
+        for (int i=0; i<selected.Count; i++) if (selected[i].position == select.position) found = i;
+        if (found == -1) {
+            selected.Add(select);
+            select.SetColor(highlightColor, false);
+        } else {
+            selected.RemoveAt(found);
+            select.SetColor(select.currentColor, true);
+        }
+    }
+
 }

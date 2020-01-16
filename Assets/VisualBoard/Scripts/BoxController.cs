@@ -112,7 +112,8 @@ public class BoxController : MonoBehaviour {
     }
 
     private void OnMouseDown() {
-        BoxSelectionManager.instance.SetSelected(this);
+        if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) BoxSelectionManager.instance.ToggleSelected(this);
+        else BoxSelectionManager.instance.SetSelected(this);
     }
 
 }
