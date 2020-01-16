@@ -41,6 +41,7 @@ public class BoxSelectionManager : MonoBehaviour {
                     foreach (var box in selected) box.ToggleCentre(i);
             }
         }
+        if (Input.GetKeyDown(KeyCode.Backspace)) foreach (var box in selected) box.Clear();
     }
 
     public void SetSelected(BoxController select) {

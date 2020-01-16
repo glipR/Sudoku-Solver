@@ -42,9 +42,15 @@ public class BoxController : MonoBehaviour {
         currentFull = s;
         var txt = transform.Find("FullNum").GetComponent<TextMeshProUGUI>();
         txt.text = s;
+        // Clear centre text.
         var centre = transform.Find("CentreNum").GetComponent<TextMeshProUGUI>();
         centre.text = "";
         centreMode = s != "";
+        // Clear corner text.
+        for (int i=0; i<8; i++) {
+            var t = transform.Find("Corner" + (i+1)).GetComponent<TextMeshProUGUI>();
+            t.text = "";
+        }
     }
 
     public void ToggleCentre(int e) {
@@ -71,6 +77,7 @@ public class BoxController : MonoBehaviour {
             // Insert in Order.
             cornerElements.Insert(~index, e);
         }
+        if (!centreMode)
         for (int i=0; i<8; i++) {
             var t = transform.Find("Corner" + (i+1)).GetComponent<TextMeshProUGUI>();
             t.text = i < cornerElements.Count ? cornerElements[i].ToString() : "";
@@ -109,6 +116,14 @@ public class BoxController : MonoBehaviour {
                 )
             );
         }
+    }
+
+    public void Clear() {
+        this.currentColor = new Color(1, 1, 1, 1);
+        this.centreElements.Clear();
+        this.cornerElements.Clear();
+        this.SetFull("");
+        this.centreMode = false;
     }
 
     private void OnMouseDown() {
