@@ -20,6 +20,8 @@ public class VisualBoardSettings {
 
 public class VisualBoardController : MonoBehaviour {
 
+    public static VisualBoardController instance;
+
     public VisualBoardSettings settings = new VisualBoardSettings();
 
     [SerializeField]
@@ -44,6 +46,7 @@ public class VisualBoardController : MonoBehaviour {
     public BoardSolver solver = new BoardSolver();
 
     private void Start() {
+        instance = this;
         GenerateDisplayConstants();
         GenerateBorders();
         GenerateBoxes();

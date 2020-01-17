@@ -26,6 +26,11 @@ public class BoxSelectionManager : MonoBehaviour {
     }
 
     private void Update() {
+        if (Input.GetKeyDown(KeyCode.LeftArrow)) ShiftSelected((-1, 0));
+        if (Input.GetKeyDown(KeyCode.RightArrow)) ShiftSelected((1, 0));
+        if (Input.GetKeyDown(KeyCode.UpArrow)) ShiftSelected((0, -1));
+        if (Input.GetKeyDown(KeyCode.DownArrow)) ShiftSelected((0, 1));
+
         if (Input.GetKeyDown(KeyCode.Z)) currentSelection = SelectionVersion.FULL;
         if (Input.GetKeyDown(KeyCode.X)) currentSelection = SelectionVersion.CORNER;
         if (Input.GetKeyDown(KeyCode.C)) currentSelection = SelectionVersion.CENTRE;
@@ -51,6 +56,16 @@ public class BoxSelectionManager : MonoBehaviour {
         selected.Clear();
         selected.Add(select);
         selected[0].SetColor(highlightColor, false);
+    }
+
+    public void ShiftSelected((int x, int y) shift) {
+        foreach (var box in selected) {
+            box.SetColor(box.currentColor, true);
+        }
+        for (int i=0; i<selected.Count; i++) {
+            selected[i] = VisualBoardController.instance.boxes[selected[i].position.x + shift.x, selected[i].position.y + shift.y];
+            selected[i].SetColor(highlightColor, false);
+        }
     }
 
     public void ToggleSelected(BoxController select) {
