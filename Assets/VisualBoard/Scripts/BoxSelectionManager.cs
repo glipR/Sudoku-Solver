@@ -63,8 +63,21 @@ public class BoxSelectionManager : MonoBehaviour {
             box.SetColor(box.currentColor, true);
         }
         for (int i=0; i<selected.Count; i++) {
-            selected[i] = VisualBoardController.instance.boxes[selected[i].position.x + shift.x, selected[i].position.y + shift.y];
+            if (
+                0 <= selected[i].position.x + shift.x &&
+                selected[i].position.x + shift.x < VisualBoardController.instance.settings.numHorizontal &&
+                0 <= selected[i].position.y + shift.y &&
+                selected[i].position.y + shift.y < VisualBoardController.instance.settings.numVertical
+            )
+                selected[i] = VisualBoardController.instance.boxes[selected[i].position.x + shift.x, selected[i].position.y + shift.y];
             selected[i].SetColor(highlightColor, false);
+        }
+        // Check uniqueness.
+        HashSet<(int x, int y)> found_pos = new HashSet<(int x, int y)>();
+        for (int i=0; i<selected.Count; i++) {
+            if (!found_pos.Add(selected[i].position)) {
+                selected.RemoveAt(i--);
+            }
         }
     }
 
