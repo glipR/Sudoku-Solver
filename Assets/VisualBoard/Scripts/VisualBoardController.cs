@@ -41,6 +41,7 @@ public class VisualBoardController : MonoBehaviour {
 
     // Publically accessible boxes.
     public BoxController[,] boxes;
+    public BoardSolver solver = new BoardSolver();
 
     private void Start() {
         GenerateDisplayConstants();
@@ -136,6 +137,20 @@ public class VisualBoardController : MonoBehaviour {
         StreamReader sr = File.OpenText(fileName);
         BoardSerializer.SerializedBoard obj = JsonUtility.FromJson<BoardSerializer.SerializedBoard>(sr.ReadToEnd());
         obj.DeserializeToBoard(this);
+    }
+
+    public void SolveBoard() {
+        // TODO: Handle the mapping of string to states with variant methods through the solver.
+        uint[,] filled = new uint[settings.numHorizontal, settings.numVertical];
+        var r = GetEntries();
+        for (int i=0; i<settings.numHorizontal; i++) for (int j=0; j<settings.numVertical; j++) {
+            if (r[i, j] == "") filled[i, j] = 0;
+            else filled[i, j] = (uint)int.Parse(r[i, j]);
+        }
+        var solved = solver.Solve(filled);
+        for (int i=0; i<settings.numHorizontal; i++) for (int j=0; j<settings.numVertical; j++) if (solved[i, j] != 0){
+            boxes[i, j].SetFull(solved[i, j].ToString());
+        }
     }
 
 }

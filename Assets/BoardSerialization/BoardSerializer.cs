@@ -11,19 +11,21 @@ public class BoardSerializer {
 
         public bool given;
         public string answer;
-        public (int x, int y) position;
+        public int posx;
+        public int posy;
 
         public SerializedBox(BoxController bc) {
             given = bc.given;
             answer = bc.currentVisibleFull;
-            position = bc.position;
+            posx = bc.position.x;
+            posy = bc.position.y;
         }
 
         public void DeserializeToBox(ref BoxController bc) {
             bc.Clear();
             bc.SetFull(answer);
             bc.given = given;
-            bc.position = position;
+            bc.position = (posx, posy);
         }
     }
 
