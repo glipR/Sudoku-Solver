@@ -10,6 +10,7 @@ public class Sudoku {
     public string[] variant_strings;
     [System.Serializable]
     public class SudokuSettings {
+        // Lines / Grids
         public int numHorizontalThicks;
         public int numVerticalThicks;
         public int numHorizontalThins;
@@ -17,7 +18,10 @@ public class Sudoku {
 
         public int numHorizontal { get { return (numHorizontalThicks - 1) * (numHorizontalThins + 1); } }
         public int numVertical { get { return (numVerticalThicks - 1) * (numHorizontalThins + 1); } }
+        // Entry types
         public int numEntryTypes;
+        // Extra information
+        public bool lineNumbers = false;
     }
 
     public SudokuSettings settings;
@@ -40,6 +44,9 @@ public class Sudoku {
         foreach (Variant v in variants) {
             v.settings.UpdateSettings(settings);
         }
+    }
+
+    public void LoadBoxes() {
         boxes = new BoardSerializer.SerializedBox[settings.numHorizontal * settings.numVertical];
         for (int i=0; i<settings.numHorizontal; i++) for (int j=0; j<settings.numVertical; j++) boxes[i*settings.numVertical+j] = new BoardSerializer.SerializedBox(VisualBoardController.instance.boxes[i, j]);
     }

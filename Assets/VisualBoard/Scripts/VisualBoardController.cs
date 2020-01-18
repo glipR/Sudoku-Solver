@@ -13,7 +13,16 @@ public class VisualBoardController : MonoBehaviour {
     private GameObject ThinLine = null;
     [SerializeField]
     private GameObject BoxObject = null;
+
+    // Visual Constants
+    [SerializeField]
+    private float lineNumberMargin = 50f;
+    [SerializeField]
+    private float noLineNumberMargin = 20f;
+    private float margin;
+
     private Vector2 backdropDimensions;
+    private Vector2 lineDimensions;
 
     // Cached display properties
     private Vector2 beginningVerticalPos;
@@ -31,25 +40,29 @@ public class VisualBoardController : MonoBehaviour {
 
     private void Start() {
         instance = this;
+        sudoku.Initialise();
         GenerateDisplayConstants();
         GenerateBorders();
         GenerateBoxes();
-        sudoku.Initialise();
+        sudoku.LoadBoxes();
     }
 
     private void GenerateDisplayConstants() {
         backdrop = transform.Find("WhiteBackdrop").gameObject;
         backdropDimensions = GetComponent<RectTransform>().sizeDelta;
+        lineDimensions = backdropDimensions;
+        if (sudoku.settings.lineNumbers) margin = lineNumberMargin;
+        else margin = noLineNumberMargin;
+        lineDimensions.x -= 2 * margin;
+        lineDimensions.y -= 2 * margin;
         var rt = backdrop.GetComponent<RectTransform>();
         rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, backdropDimensions.x);
         rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, backdropDimensions.y);
-        ThickLine.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, backdropDimensions.x);
-        ThinLine.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, backdropDimensions.x);
         thickWidth = ThickLine.GetComponent<RectTransform>().sizeDelta.y;
         thinWidth = ThinLine.GetComponent<RectTransform>().sizeDelta.y;
-        beginningVerticalPos = new Vector2(0, -thickWidth / 2f);
-        beginningHorizontalPos = new Vector2(-backdropDimensions.x / 2f + thickWidth / 2f, -backdropDimensions.y / 2f);
-        largeLineLengths = new Vector2((backdropDimensions.x - thickWidth) / (sudoku.settings.numHorizontalThicks - 1f), (backdropDimensions.y - thickWidth) / (sudoku.settings.numVerticalThicks - 1f));
+        beginningVerticalPos = new Vector2(0, -thickWidth / 2f - margin);
+        beginningHorizontalPos = new Vector2(-backdropDimensions.x / 2f + thickWidth / 2f + margin, -backdropDimensions.y / 2f);
+        largeLineLengths = new Vector2((lineDimensions.x - thickWidth) / (sudoku.settings.numHorizontalThicks - 1f), (lineDimensions.y - thickWidth) / (sudoku.settings.numVerticalThicks - 1f));
         smallLineLengths = new Vector2((largeLineLengths.x - thickWidth + thinWidth) / (sudoku.settings.numHorizontalThins + 1f), (largeLineLengths.y - thickWidth + thinWidth) / (sudoku.settings.numVerticalThins + 1f));
     }
 
@@ -58,23 +71,27 @@ public class VisualBoardController : MonoBehaviour {
         for (int thickIndex=0; thickIndex<sudoku.settings.numVerticalThicks; thickIndex++) {
             RectTransform top_line = Instantiate(ThickLine, backdrop.transform).GetComponent<RectTransform>();
             top_line.gameObject.name = "VerticalThick " + thickIndex;
+            top_line.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, lineDimensions.x);
             top_line.anchoredPosition = beginningVerticalPos + new Vector2(0, -largeLineLengths.y * thickIndex);
             if (thickIndex != sudoku.settings.numVerticalThicks-1)
             for (int thinIndex=1; thinIndex<=sudoku.settings.numVerticalThins; thinIndex++) {
                 RectTransform thin_line = Instantiate(ThinLine, backdrop.transform).GetComponent<RectTransform>();
                 thin_line.gameObject.name = "VerticalThin " + thickIndex + " " + thinIndex;
+                thin_line.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, lineDimensions.x);
                 thin_line.anchoredPosition = top_line.anchoredPosition - new Vector2(0, (thickWidth - thinWidth) / 2f + smallLineLengths.y * thinIndex);
             }
         }
         for (int thickIndex=0; thickIndex<sudoku.settings.numHorizontalThicks; thickIndex++) {
             RectTransform left_line = Instantiate(ThickLine, backdrop.transform).GetComponent<RectTransform>();
             left_line.gameObject.name = "HorizontalThick " + thickIndex;
+            left_line.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, lineDimensions.y);
             left_line.anchoredPosition = beginningHorizontalPos + new Vector2(largeLineLengths.x * thickIndex , 0f);
             left_line.rotation = Quaternion.AngleAxis(90f, Vector3.forward);
             if (thickIndex != sudoku.settings.numHorizontalThicks-1)
             for (int thinIndex=1; thinIndex<=sudoku.settings.numHorizontalThins; thinIndex++) {
                 RectTransform thin_line = Instantiate(ThinLine, backdrop.transform).GetComponent<RectTransform>();
                 thin_line.gameObject.name = "HorizontalThin " + thickIndex + " " + thinIndex;
+                thin_line.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, lineDimensions.y);
                 thin_line.rotation = Quaternion.AngleAxis(90f, Vector3.forward);
                 thin_line.anchoredPosition = left_line.anchoredPosition + new Vector2((thickWidth - thinWidth) / 2f + smallLineLengths.x * thinIndex, 0);
             }
@@ -90,8 +107,8 @@ public class VisualBoardController : MonoBehaviour {
                     for (int thinV=0; thinV < sudoku.settings.numVerticalThins+1; thinV++) {
                         RectTransform box = Instantiate(BoxObject, backdrop.transform).GetComponent<RectTransform>();
                         box.anchoredPosition = new Vector2(
-                            thickWidth + (smallLineLengths.x - thinWidth) / 2f + largeLineLengths.x * thickH + smallLineLengths.x * thinH,
-                            -thickWidth - (smallLineLengths.y - thinWidth) / 2f - largeLineLengths.y * thickV - smallLineLengths.y * thinV
+                            thickWidth + (smallLineLengths.x - thinWidth) / 2f + largeLineLengths.x * thickH + smallLineLengths.x * thinH + margin,
+                            -thickWidth - (smallLineLengths.y - thinWidth) / 2f - largeLineLengths.y * thickV - smallLineLengths.y * thinV - margin
                         );
                         box.gameObject.GetComponent<BoxController>().SetSize(new Vector2(smallLineLengths.x - thinWidth, smallLineLengths.y - thinWidth));
                         int inx = thickH * (sudoku.settings.numHorizontalThins + 1) + thinH;

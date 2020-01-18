@@ -1220,6 +1220,7 @@ MonoBehaviour:
     type: 3}
   BoxObject: {fileID: 789369017189365435, guid: 3d6a6a08a7cac974c85a8a6f55a4abd7,
     type: 3}
+  lineNumberMargin: 50
   sudoku:
     variant_strings:
     - Base
@@ -1229,6 +1230,7 @@ MonoBehaviour:
       numHorizontalThins: 2
       numVerticalThins: 2
       numEntryTypes: 0
+      lineNumbers: 0
     boxes: []
 --- !u!1 &1869289010
 GameObject:
