@@ -6,6 +6,9 @@ using TMPro;
 
 public class BoxController : MonoBehaviour {
 
+    public static int topBox = -1;
+    public static int botBox = -2;
+
     public static float cornerRatio = 0.3f;
 
     public (int x, int y) position;
@@ -31,7 +34,7 @@ public class BoxController : MonoBehaviour {
         new Vector2(1, 0.5f)
     };
 
-    private void Start() {
+    private void Awake() {
         centreMode = false;
     }
 

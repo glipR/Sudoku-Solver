@@ -35,6 +35,7 @@ public class VisualBoardController : MonoBehaviour {
 
     // Publically accessible boxes.
     public BoxController[,] boxes;
+    public List<BoxController> lineBoxes = new List<BoxController>();
     public BoardSolver solver = new BoardSolver();
     public Sudoku sudoku = Sudoku.BasicSudoku();
 
@@ -135,6 +136,8 @@ public class VisualBoardController : MonoBehaviour {
         bc.SetSize(new Vector2(smallLineLengths.x - thinWidth, smallLineLengths.y - thinWidth));
         bc.SetFull(result);
         bc.SetUneditable();
+        bc.position = (i, top ? BoxController.topBox : BoxController.botBox);
+        lineBoxes.Add(bc);
     }
 
     public void AddColNumber(int j, string result, bool top) {
@@ -148,6 +151,8 @@ public class VisualBoardController : MonoBehaviour {
         bc.SetSize(new Vector2(smallLineLengths.x - thinWidth, smallLineLengths.y - thinWidth));
         bc.SetFull(result);
         bc.SetUneditable();
+        bc.position = (top ? BoxController.topBox : BoxController.botBox, j);
+        lineBoxes.Add(bc);
     }
 
     // This will later be handled by a separate selection panel, but for now it's fine.

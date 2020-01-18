@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class BoardSerializer {
 
-    const string SEPARATOR = "\n";
-
     [System.Serializable]
     public class SerializedBox {
 
@@ -33,12 +31,18 @@ public class BoardSerializer {
     public class SerializedBoard {
         public Sudoku sudoku;
         public SerializedBox[] boxes;
+        public string[] variantSerializations;
 
         public SerializedBoard(VisualBoardController vbc) {
             sudoku = vbc.sudoku;
             boxes = new SerializedBox[sudoku.settings.numHorizontal * sudoku.settings.numVertical];
             for (int i=0; i<sudoku.settings.numHorizontal; i++) for (int j=0; j<sudoku.settings.numVertical; j++) {
                 boxes[i*sudoku.settings.numVertical+j] = new SerializedBox(vbc.boxes[i,j]);
+            }
+            variantSerializations = new string[sudoku.variants.Count];
+            for (int i=0; i<sudoku.variants.Count; i++) {
+                sudoku.variants[i].serializer.Serialize(vbc);
+                variantSerializations[i] = sudoku.variants[i].serializer.serializiationString;
             }
         }
 
@@ -47,6 +51,10 @@ public class BoardSerializer {
             vbc.sudoku.Initialise();
             for (int i=0; i<sudoku.settings.numHorizontal; i++) for (int j=0; j<sudoku.settings.numVertical; j++) {
                 boxes[i*sudoku.settings.numVertical + j].DeserializeToBox(ref vbc.boxes[i,j]);
+            }
+            for (int i=0; i<sudoku.variants.Count; i++) {
+                sudoku.variants[i].serializer.serializiationString = variantSerializations[i];
+                sudoku.variants[i].serializer.DeserializeToBoard(vbc);
             }
         }
     }

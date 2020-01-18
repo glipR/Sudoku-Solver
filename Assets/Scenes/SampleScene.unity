@@ -1448,9 +1448,11 @@ MonoBehaviour:
     type: 3}
   lineNumberMargin: 50
   noLineNumberMargin: 20
+  lineBoxes: []
   sudoku:
     variant_strings:
     - Base
+    - Sandwich
     settings:
       numHorizontalThicks: 4
       numVerticalThicks: 4

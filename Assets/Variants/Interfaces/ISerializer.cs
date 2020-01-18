@@ -5,7 +5,9 @@ using UnityEngine;
 [System.Serializable]
 public abstract class ISerializer {
 
-    public ISerializer(VisualBoardController vbc) {}
+    public string serializiationString { get; set; }
+
+    public abstract void Serialize(VisualBoardController vbc);
     public abstract void DeserializeToBoard(VisualBoardController vbc);
 
 }

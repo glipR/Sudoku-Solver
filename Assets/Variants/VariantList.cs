@@ -11,12 +11,15 @@ public class Variant {
 public static class VariantList {
 
     public enum VariantType {
-        Base
+        Base,
+        Sandwich
     }
 
     public static Variant GetVariant(string v) {
         if (v == VariantType.Base.ToString())
             return BaseVariant();
+        if (v == VariantType.Sandwich.ToString())
+            return SandwichVariant();
         Debug.Log("Variant Type " + v + ", not handled, returning the base.");
         return BaseVariant();
     }
@@ -25,6 +28,15 @@ public static class VariantList {
         Variant v = new Variant();
         v.solver = new BaseSolver();
         v.settings = new BaseSettings();
+        v.serializer = new BaseSerializer();
+        return v;
+    }
+
+    public static Variant SandwichVariant() {
+        Variant v = new Variant();
+        v.solver = new SandwichSolver();
+        v.settings = new SandwichSettings();
+        v.serializer = new SandwichSerializer();
         return v;
     }
 
