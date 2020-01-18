@@ -22,30 +22,31 @@ public class BoardSerializer {
         }
 
         public void DeserializeToBox(ref BoxController bc) {
-            bc.Clear();
-            bc.SetFull(answer);
-            bc.given = given;
             bc.position = (posx, posy);
+            bc.given = given;
+            VisualBoardController.instance.Clear(bc.position.x, bc.position.y);
+            VisualBoardController.instance.SetFull(bc.position.x, bc.position.y, answer);
         }
     }
 
     [System.Serializable]
     public class SerializedBoard {
-        public VisualBoardSettings settings;
+        public Sudoku sudoku;
         public SerializedBox[] boxes;
 
         public SerializedBoard(VisualBoardController vbc) {
-            settings = vbc.settings;
-            boxes = new SerializedBox[settings.numHorizontal * settings.numVertical];
-            for (int i=0; i<settings.numHorizontal; i++) for (int j=0; j<settings.numVertical; j++) {
-                boxes[i*settings.numVertical+j] = new SerializedBox(vbc.boxes[i,j]);
+            sudoku = vbc.sudoku;
+            boxes = new SerializedBox[sudoku.settings.numHorizontal * sudoku.settings.numVertical];
+            for (int i=0; i<sudoku.settings.numHorizontal; i++) for (int j=0; j<sudoku.settings.numVertical; j++) {
+                boxes[i*sudoku.settings.numVertical+j] = new SerializedBox(vbc.boxes[i,j]);
             }
         }
 
         public void DeserializeToBoard(VisualBoardController vbc) {
-            vbc.settings = settings;
-            for (int i=0; i<settings.numHorizontal; i++) for (int j=0; j<settings.numVertical; j++) {
-                boxes[i*settings.numVertical + j].DeserializeToBox(ref vbc.boxes[i,j]);
+            vbc.sudoku = sudoku;
+            vbc.sudoku.Initialise();
+            for (int i=0; i<sudoku.settings.numHorizontal; i++) for (int j=0; j<sudoku.settings.numVertical; j++) {
+                boxes[i*sudoku.settings.numVertical + j].DeserializeToBox(ref vbc.boxes[i,j]);
             }
         }
     }
