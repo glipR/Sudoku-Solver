@@ -107,7 +107,7 @@ public class BoxController : MonoBehaviour {
         fn.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x);
         fn.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y);
         var cn = transform.Find("CentreNum").GetComponent<RectTransform>();
-        cn.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x * 0.7f);
+        cn.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x * 0.85f);
         cn.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y * 0.4f);
         for (int i=0; i<8; i++) {
             var t = transform.Find("Corner" + (i+1)).GetComponent<RectTransform>();
