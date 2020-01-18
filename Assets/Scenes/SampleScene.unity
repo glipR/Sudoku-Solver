@@ -1221,6 +1221,7 @@ MonoBehaviour:
   BoxObject: {fileID: 789369017189365435, guid: 3d6a6a08a7cac974c85a8a6f55a4abd7,
     type: 3}
   lineNumberMargin: 50
+  noLineNumberMargin: 20
   sudoku:
     variant_strings:
     - Base

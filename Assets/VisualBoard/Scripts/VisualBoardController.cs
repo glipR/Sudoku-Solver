@@ -120,6 +120,34 @@ public class VisualBoardController : MonoBehaviour {
                 }
             }
         }
+        AddRowNumber(3, "6", true);
+        AddColNumber(6, "2", true);
+    }
+
+    public void AddRowNumber(int i, string result, bool top) {
+        RectTransform box = Instantiate(BoxObject, backdrop.transform).GetComponent<RectTransform>();
+        box.anchoredPosition = new Vector2(
+            (top ? margin / 2f : backdropDimensions.x - margin / 2f),
+            -thickWidth - (smallLineLengths.y - thinWidth) / 2f - largeLineLengths.y * (i / (sudoku.settings.numVerticalThicks-1)) - smallLineLengths.y * (i % (sudoku.settings.numVerticalThicks-1)) - margin
+        );
+        box.gameObject.name = "RowNum " + i;
+        var bc = box.gameObject.GetComponent<BoxController>();
+        bc.SetSize(new Vector2(smallLineLengths.x - thinWidth, smallLineLengths.y - thinWidth));
+        bc.SetFull(result);
+        bc.SetUneditable();
+    }
+
+    public void AddColNumber(int j, string result, bool top) {
+        RectTransform box = Instantiate(BoxObject, backdrop.transform).GetComponent<RectTransform>();
+        box.anchoredPosition = new Vector2(
+            thickWidth + (smallLineLengths.x - thinWidth) / 2f + largeLineLengths.x * (j / (sudoku.settings.numVerticalThicks-1)) + smallLineLengths.x * (j % (sudoku.settings.numVerticalThicks-1)) + margin,
+            (top ? -margin / 2f : -backdropDimensions.y + margin / 2f)
+        );
+        box.gameObject.name = "ColNum " + j;
+        var bc = box.gameObject.GetComponent<BoxController>();
+        bc.SetSize(new Vector2(smallLineLengths.x - thinWidth, smallLineLengths.y - thinWidth));
+        bc.SetFull(result);
+        bc.SetUneditable();
     }
 
     // This will later be handled by a separate selection panel, but for now it's fine.

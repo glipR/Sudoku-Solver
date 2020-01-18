@@ -18,6 +18,7 @@ public class BoxController : MonoBehaviour {
 
     public bool centreMode;
     public bool given = false;
+    public bool editable = true;
 
     private Vector2[] anchors = {
         new Vector2(0, 0),
@@ -32,6 +33,10 @@ public class BoxController : MonoBehaviour {
 
     private void Start() {
         centreMode = false;
+    }
+
+    public void SetUneditable() {
+        editable = false;
     }
 
     public void SetColor(Color c, bool update) {
@@ -122,6 +127,9 @@ public class BoxController : MonoBehaviour {
                 )
             );
         }
+        foreach (var text in GetComponentsInChildren<TextMeshProUGUI>()) {
+            text.fontSize *= Mathf.Min(size.x, size.y) / (70f);
+        }
     }
 
     public void Clear() {
@@ -134,11 +142,13 @@ public class BoxController : MonoBehaviour {
     }
 
     private void OnMouseDown() {
+        if (!editable) return;
         if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) BoxSelectionManager.instance.ToggleSelected(this);
         else BoxSelectionManager.instance.SetSelected(this);
     }
 
     private void OnMouseEnter() {
+        if (!editable) return;
         if (Input.GetMouseButton(0)) BoxSelectionManager.instance.EnsureSelected(this);
     }
 
