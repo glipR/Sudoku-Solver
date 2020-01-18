@@ -43,6 +43,8 @@ public class VisualBoardController : MonoBehaviour {
         var rt = backdrop.GetComponent<RectTransform>();
         rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, backdropDimensions.x);
         rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, backdropDimensions.y);
+        ThickLine.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, backdropDimensions.x);
+        ThinLine.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, backdropDimensions.x);
         thickWidth = ThickLine.GetComponent<RectTransform>().sizeDelta.y;
         thinWidth = ThinLine.GetComponent<RectTransform>().sizeDelta.y;
         beginningVerticalPos = new Vector2(0, -thickWidth / 2f);
