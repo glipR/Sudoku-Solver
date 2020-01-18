@@ -1214,17 +1214,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46576cc1d7f4d244697dabd603ca4d0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  settings:
-    numHorizontalThicks: 4
-    numVerticalThicks: 4
-    numHorizontalThins: 2
-    numVerticalThins: 2
   ThickLine: {fileID: 3492692245259713428, guid: cb698af316bbe8f428bad1e005a0f1fc,
     type: 3}
   ThinLine: {fileID: 8677481663757863381, guid: cd5c8b03b1f671946b64c3b79e0c9091,
     type: 3}
   BoxObject: {fileID: 789369017189365435, guid: 3d6a6a08a7cac974c85a8a6f55a4abd7,
     type: 3}
+  sudoku:
+    variant_strings:
+    - Base
+    settings:
+      numHorizontalThicks: 4
+      numVerticalThicks: 4
+      numHorizontalThins: 2
+      numVerticalThins: 2
+      numEntryTypes: 0
+    boxes: []
 --- !u!1 &1869289010
 GameObject:
   m_ObjectHideFlags: 0
@@ -1417,7 +1422,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 772, y: 548}
+  m_SizeDelta: {x: 500, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1953501587
 MonoBehaviour:
