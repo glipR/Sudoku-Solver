@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BoardSolver
-{
+public class BoardSolver {
 
     public Sudoku sudoku;
 
@@ -51,7 +50,10 @@ public class BoardSolver
             // Clear all boxes with 1 option.
             for (int i = 0; i < sudoku.settings.numHorizontal; i++) for (int j = 0; j < sudoku.settings.numVertical; j++) {
                 if (!solved[i, j]) {
-                    if (options[i, j] == 0) return false;
+                    if (options[i, j] == 0) {
+                        Debug.Log(i + " " + j);
+                        return false;
+                    }
                     if ((options[i, j] & (options[i, j] - 1)) == 0) {
                         changed = true;
                         uint v;
@@ -99,6 +101,14 @@ public class BoardSolver
 
     public bool Allows(int i, int j, uint v) {
         return (options[i, j] & (1u << (int)(v - 1))) != 0;
+    }
+
+    public List<uint> GetOptions(int i, int j) {
+        var res = new List<uint>();
+        for (uint v=1; v<sudoku.settings.numEntryTypes; v++) {
+            if (Allows(i, j, v)) res.Add(v);
+        }
+        return res;
     }
 
 }

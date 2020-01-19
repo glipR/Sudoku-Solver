@@ -67,4 +67,12 @@ public class Sudoku {
         return "";
     }
 
+    public Variant GetVariant(string s) {
+        for (int i=0; i<variant_strings.Length; i++) if (variant_strings[i] == s) {
+            return variants[i];
+        }
+        Debug.Log("Variant " + s + " not found");
+        return null;
+    }
+
 }

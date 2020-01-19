@@ -121,8 +121,6 @@ public class VisualBoardController : MonoBehaviour {
                 }
             }
         }
-        AddRowNumber(3, "6", true);
-        AddColNumber(6, "2", true);
     }
 
     public void AddRowNumber(int i, string result, bool top) {
