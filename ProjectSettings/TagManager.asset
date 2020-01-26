@@ -42,3 +42,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: TopCanvas
+    uniqueID: 1181882289
+    locked: 0

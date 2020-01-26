@@ -22,7 +22,9 @@ public class ListItem : MonoBehaviour {
     }
 
     private void OnMouseDown() {
-        Debug.Log("Clicked!");
+        board.DeserializeToBoard(VisualBoardController.instance);
+        VisualBoardController.instance.Initialise();
+        board.DeserializeToBoard(VisualBoardController.instance);
     }
 
 }
