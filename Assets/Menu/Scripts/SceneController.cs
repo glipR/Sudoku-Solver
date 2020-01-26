@@ -18,24 +18,32 @@ public class SceneController : MonoBehaviour {
         sceneStack.Add(MENU);
     }
 
-    public void Load(string sceneName) {
+    public IEnumerator Load(string sceneName) {
         sceneStack.Add(sceneName);
-        SceneManager.LoadScene(sceneName);
+        AsyncOperation loaded = SceneManager.LoadSceneAsync(sceneName);
+        while (!loaded.isDone) {
+            yield return null;
+        }
+        StartUp.instance.OnSceneChanged();
     }
 
-    public void BackLoad() {
+    public IEnumerator BackLoad() {
         if (sceneStack.Count > 0) {
-            SceneManager.LoadScene(sceneStack[sceneStack.Count-1]);
+            AsyncOperation loaded = SceneManager.LoadSceneAsync(sceneStack[sceneStack.Count-1]);
             sceneStack.RemoveAt(sceneStack.Count-1);
+            while (!loaded.isDone) {
+                yield return null;
+            }
+            StartUp.instance.OnSceneChanged();
         }
     }
 
     public void LoadSelection() {
-        Load(SELECTION);
+        StartCoroutine(Load(SELECTION));
     }
 
     public void LoadMenu() {
-        Load(MENU);
+        StartCoroutine(Load(MENU));
     }
 
 }
