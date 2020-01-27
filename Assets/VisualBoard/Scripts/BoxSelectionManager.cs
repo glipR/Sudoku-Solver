@@ -60,7 +60,7 @@ public class BoxSelectionManager : MonoBehaviour {
 
     public void ShiftSelected((int x, int y) shift) {
         foreach (var box in selected) {
-            VisualBoardController.instance.ResetColor(shift.x, shift.y);
+            VisualBoardController.instance.ResetColor(box.x, box.y);
         }
         for (int i=0; i<selected.Count; i++) {
             if (
