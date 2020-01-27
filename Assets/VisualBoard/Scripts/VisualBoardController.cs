@@ -161,12 +161,12 @@ public class VisualBoardController : MonoBehaviour {
         generatedObjects.Add(box.gameObject);
         box.anchoredPosition = new Vector2(
             (top ? margin / 2f * backdropDimensions.x : backdropDimensions.x - margin * backdropDimensions.x / 2f),
-            -thickWidthV - (smallLineLengths.y - thinWidthV) / 2f - largeLineLengths.y * (i / (sudoku.settings.numVerticalThicks-1)) - smallLineLengths.y * (i % (sudoku.settings.numVerticalThicks-1)) - margin
+            -thickWidthV - (smallLineLengths.y - thinWidthV) / 2f - largeLineLengths.y * ((i+1) / (sudoku.settings.numVerticalThicks-1)) - smallLineLengths.y * ((i+1) % (sudoku.settings.numVerticalThicks-1)) - margin
         );
         box.gameObject.name = "RowNum " + i;
         var bc = box.gameObject.GetComponent<BoxController>();
         bc.SetSize(new Vector2(smallLineLengths.x - thinWidthH, smallLineLengths.y - thinWidthV));
-        bc.SetFull(result);
+        bc.SetFull(result, false);
         bc.SetUneditable();
         bc.position = (i, top ? BoxController.topBox : BoxController.botBox);
         lineBoxes.Add(bc);
@@ -176,13 +176,13 @@ public class VisualBoardController : MonoBehaviour {
         RectTransform box = Instantiate(BoxObject, backdrop.transform).GetComponent<RectTransform>();
         generatedObjects.Add(box.gameObject);
         box.anchoredPosition = new Vector2(
-            thickWidthH + (smallLineLengths.x - thinWidthH) / 2f + largeLineLengths.x * (j / (sudoku.settings.numVerticalThicks-1)) + smallLineLengths.x * (j % (sudoku.settings.numVerticalThicks-1)) + margin,
+            thickWidthH + (smallLineLengths.x - thinWidthH) / 2f + largeLineLengths.x * ((j+1) / (sudoku.settings.numVerticalThicks-1)) + smallLineLengths.x * ((j+1) % (sudoku.settings.numVerticalThicks-1)) + margin,
             (top ? -margin * backdropDimensions.y / 2f : -backdropDimensions.y + margin * backdropDimensions.y / 2f)
         );
         box.gameObject.name = "ColNum " + j;
         var bc = box.gameObject.GetComponent<BoxController>();
         bc.SetSize(new Vector2(smallLineLengths.x - thinWidthH, smallLineLengths.y - thinWidthV));
-        bc.SetFull(result);
+        bc.SetFull(result, false);
         bc.SetUneditable();
         bc.position = (top ? BoxController.topBox : BoxController.botBox, j);
         lineBoxes.Add(bc);
@@ -207,7 +207,7 @@ public class VisualBoardController : MonoBehaviour {
     public void SolveBoard() {
         var solved = solver.Solve(sudoku);
         for (int i=0; i<sudoku.settings.numHorizontal; i++) for (int j=0; j<sudoku.settings.numVertical; j++) if (solved[i, j] != 0){
-            boxes[i, j].SetFull(solved[i, j].ToString());
+            boxes[i, j].SetFull(solved[i, j].ToString(), false);
         }
     }
 
@@ -239,8 +239,8 @@ public class VisualBoardController : MonoBehaviour {
     }
 
     // Accessing boxes by index
-    public void SetFull(int i, int j, string s) {
-        boxes[i, j].SetFull(s);
+    public void SetFull(int i, int j, string s, bool fromUI) {
+        boxes[i, j].SetFull(s, fromUI);
         sudoku.boxes[i*sudoku.settings.numVertical+j].answer = s;
     }
 

@@ -39,7 +39,7 @@ public class BoxSelectionManager : MonoBehaviour {
         for (int i=1; i<keyCodes.Length; i++) {
             if (Input.GetKeyDown(keyCodes[i])) {
                 if (currentSelection == SelectionVersion.FULL)
-                    foreach (var box in selected) VisualBoardController.instance.SetFull(box.x, box.y, i.ToString());
+                    foreach (var box in selected) VisualBoardController.instance.SetFull(box.x, box.y, i.ToString(), true);
                 if (currentSelection == SelectionVersion.CORNER)
                     foreach (var box in selected) VisualBoardController.instance.ToggleCorner(box.x, box.y, i);
                 if (currentSelection == SelectionVersion.CENTRE)

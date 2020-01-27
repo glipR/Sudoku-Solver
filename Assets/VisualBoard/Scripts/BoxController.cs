@@ -49,8 +49,8 @@ public class BoxController : MonoBehaviour {
         img.color = c;
     }
 
-    public void SetFull(string s) {
-        if (given) return;
+    public void SetFull(string s, bool fromUI) {
+        if (given && fromUI) return;
         currentFull = s;
         var txt = transform.Find("FullNum").GetComponent<TextMeshProUGUI>();
         txt.text = s;
@@ -140,7 +140,7 @@ public class BoxController : MonoBehaviour {
         this.currentColor = new Color(1, 1, 1, 1);
         this.centreElements.Clear();
         this.cornerElements.Clear();
-        this.SetFull("");
+        this.SetFull("", false);
         this.centreMode = false;
     }
 

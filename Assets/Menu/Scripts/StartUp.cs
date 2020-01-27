@@ -24,6 +24,8 @@ public class StartUp : MonoBehaviour {
                 else
                     Debug.Log("Select a board!");
             });
+        } else if (sceneName == SceneController.GAME) {
+            GameObject.Find("SolveButton").GetComponent<Button>().onClick.AddListener(VisualBoardController.instance.SolveBoard);
         }
     }
 

@@ -23,7 +23,7 @@ public class BoardSerializer {
             bc.position = (posx, posy);
             bc.given = given;
             VisualBoardController.instance.Clear(bc.position.x, bc.position.y);
-            VisualBoardController.instance.SetFull(bc.position.x, bc.position.y, answer);
+            VisualBoardController.instance.SetFull(bc.position.x, bc.position.y, answer, false);
         }
     }
 
