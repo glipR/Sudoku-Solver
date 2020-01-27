@@ -105,7 +105,7 @@ public class BoardSolver {
 
     public List<uint> GetOptions(int i, int j) {
         var res = new List<uint>();
-        for (uint v=1; v<sudoku.settings.numEntryTypes; v++) {
+        for (uint v=1; v<=sudoku.settings.numEntryTypes; v++) {
             if (Allows(i, j, v)) res.Add(v);
         }
         return res;

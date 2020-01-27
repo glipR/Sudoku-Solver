@@ -208,6 +208,10 @@ public class VisualBoardController : MonoBehaviour {
         var solved = solver.Solve(sudoku);
         for (int i=0; i<sudoku.settings.numHorizontal; i++) for (int j=0; j<sudoku.settings.numVertical; j++) if (solved[i, j] != 0){
             boxes[i, j].SetFull(solved[i, j].ToString(), false);
+        } else {
+            foreach (uint x in solver.GetOptions(i, j)) {
+                boxes[i, j].ToggleCentre((int)x);
+            }
         }
     }
 

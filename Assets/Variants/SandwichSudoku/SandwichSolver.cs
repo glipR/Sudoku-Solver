@@ -20,7 +20,7 @@ public class SandwichSolver : ISolverSettings {
             if (box.posx == BoxController.topBox || box.posx == BoxController.botBox) {
                 int oneIndex = -1;
                 int oneCounts = 0;
-                int nineIndex = 01;
+                int nineIndex = -1;
                 int nineCounts = 0;
                 for (int i=0; i<bs.sudoku.settings.numHorizontal; i++) {
                     if (bs.Allows(box.posy, i, 1)) { oneCounts++; oneIndex = i; }
