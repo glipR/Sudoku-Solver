@@ -232,6 +232,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d647302da7b03c94794897c179845dff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  colourPallete: {fileID: 11400000, guid: b3a778da91c8b594f857c73df135c850, type: 2}
   highlightColor: {r: 1, g: 0.9919496, b: 0.5235849, a: 0.48235294}
 --- !u!4 &570648131
 Transform:

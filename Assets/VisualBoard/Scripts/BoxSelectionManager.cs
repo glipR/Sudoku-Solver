@@ -13,6 +13,8 @@ public class BoxSelectionManager : MonoBehaviour {
 
     private static KeyCode[] keyCodes = { KeyCode.None, KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9 };
 
+    public ColourPallete colourPallete;
+
     public static BoxSelectionManager instance;
     [SerializeField]
     private Color highlightColor = new Color(0.5f, 1, 1, 1);
@@ -44,6 +46,8 @@ public class BoxSelectionManager : MonoBehaviour {
                     foreach (var box in selected) VisualBoardController.instance.ToggleCorner(box.x, box.y, i);
                 if (currentSelection == SelectionVersion.CENTRE)
                     foreach (var box in selected) VisualBoardController.instance.ToggleCentre(box.x, box.y, i);
+                if (currentSelection == SelectionVersion.COLOR)
+                    foreach (var box in selected) VisualBoardController.instance.SetColor(box.x, box.y, GetColor(i), true);
             }
         }
         if (Input.GetKeyDown(KeyCode.Backspace)) foreach (var box in selected) VisualBoardController.instance.Clear(box.x, box.y);
@@ -102,6 +106,10 @@ public class BoxSelectionManager : MonoBehaviour {
             selected.Add(select.position);
             VisualBoardController.instance.SetColor(select.position.x, select.position.y, highlightColor, false);
         }
+    }
+
+    private Color GetColor(int i) {
+        return colourPallete.colours[i-1];
     }
 
 }
