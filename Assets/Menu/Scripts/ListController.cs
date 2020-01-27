@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class ListController : MonoBehaviour {
 
+    public static ListController instance;
+    public bool clicked = false;
+
     const string boardsDirectory = "Testing";
 
     public List<string> names = new List<string>();
@@ -16,12 +19,14 @@ public class ListController : MonoBehaviour {
     private GameObject ListHolder = null;
 
     private void Start() {
+        instance = this;
         Refresh();
     }
 
     public void Refresh() {
         GatherBoards();
         GenerateTiles();
+        clicked = false;
     }
 
     private void GatherBoards() {

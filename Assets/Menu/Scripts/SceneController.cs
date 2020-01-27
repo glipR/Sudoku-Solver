@@ -5,9 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class SceneController : MonoBehaviour {
 
-    static string SELECTION = "SelectionScene";
-    static string MENU = "MenuScene";
-    static string GAME = "SampleScene";
+    public static string SELECTION = "SelectionScene";
+    public static string MENU = "MenuScene";
+    public static string GAME = "GameScene";
 
     public static SceneController instance;
 
@@ -24,17 +24,18 @@ public class SceneController : MonoBehaviour {
         while (!loaded.isDone) {
             yield return null;
         }
-        StartUp.instance.OnSceneChanged();
+        StartUp.instance.OnSceneChanged(sceneName);
     }
 
     public IEnumerator BackLoad() {
         if (sceneStack.Count > 0) {
-            AsyncOperation loaded = SceneManager.LoadSceneAsync(sceneStack[sceneStack.Count-1]);
+            string sceneName = sceneStack[sceneStack.Count-1];
+            AsyncOperation loaded = SceneManager.LoadSceneAsync(sceneName);
             sceneStack.RemoveAt(sceneStack.Count-1);
             while (!loaded.isDone) {
                 yield return null;
             }
-            StartUp.instance.OnSceneChanged();
+            StartUp.instance.OnSceneChanged(sceneName);
         }
     }
 
@@ -44,6 +45,10 @@ public class SceneController : MonoBehaviour {
 
     public void LoadMenu() {
         StartCoroutine(Load(MENU));
+    }
+
+    public void LoadGame() {
+        StartCoroutine(Load(GAME));
     }
 
 }

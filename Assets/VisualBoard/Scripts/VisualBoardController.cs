@@ -5,6 +5,14 @@ using UnityEngine;
 
 public class VisualBoardController : MonoBehaviour {
 
+    public enum InteractionState {
+        VIEWING,
+        EDITING,
+        PLAYING
+    }
+
+    public InteractionState interactionState = InteractionState.VIEWING;
+
     public static VisualBoardController instance;
 
     [SerializeField]
@@ -45,6 +53,7 @@ public class VisualBoardController : MonoBehaviour {
     public List<BoxController> lineBoxes = new List<BoxController>();
     public BoardSolver solver = new BoardSolver();
     public Sudoku sudoku = Sudoku.BasicSudoku();
+    public BoardSerializer.SerializedBoard startState;
 
     private void Start() {
         instance = this;
@@ -200,6 +209,33 @@ public class VisualBoardController : MonoBehaviour {
         for (int i=0; i<sudoku.settings.numHorizontal; i++) for (int j=0; j<sudoku.settings.numVertical; j++) if (solved[i, j] != 0){
             boxes[i, j].SetFull(solved[i, j].ToString());
         }
+    }
+
+    public void ResetView() {
+        if (startState.boxes.Length > 0) {
+            startState.DeserializeToBoard(this);
+            Initialise();
+            startState.DeserializeToBoard(this);
+        }
+    }
+
+    // Viewmodel changes.
+    public void SetView(string sceneName) {
+        var topDim = transform.parent.GetComponent<RectTransform>().sizeDelta;
+        var rt = GetComponent<RectTransform>();
+        if (sceneName == SceneController.SELECTION) {
+            float minSize = Mathf.Min(topDim.x/4f, topDim.y/3f);
+            rt.sizeDelta = new Vector2(minSize, minSize);
+            rt.anchoredPosition = new Vector2(-topDim.x/5, topDim.y/4f);
+        } else if (sceneName == SceneController.MENU) {
+            rt.sizeDelta = new Vector2(0, 0);
+            Initialise();
+        } else if (sceneName == SceneController.GAME) {
+            float minSize = Mathf.Min(topDim.x*0.8f, topDim.y*0.8f);
+            rt.sizeDelta = new Vector2(minSize, minSize);
+            rt.anchoredPosition = new Vector2(-topDim.x*0.65f, 0f);
+        }
+        ResetView();
     }
 
     // Accessing boxes by index
