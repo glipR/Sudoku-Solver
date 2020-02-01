@@ -10,6 +10,7 @@ public class BoxController : MonoBehaviour {
     public static int botBox = -2;
 
     public static float cornerRatio = 0.3f;
+    public static Color givenColor = new Color(0f, 0f, 1f);
 
     public (int x, int y) position;
     public Color currentColor = new Color(1, 1, 1, 1);
@@ -87,6 +88,7 @@ public class BoxController : MonoBehaviour {
         currentFull = s;
         var txt = transform.Find("FullNum").GetComponent<TextMeshProUGUI>();
         txt.text = s;
+        if (given) txt.color = givenColor;
         // Clear centre text.
         var centre = transform.Find("CentreNum").GetComponent<TextMeshProUGUI>();
         centre.text = "";
