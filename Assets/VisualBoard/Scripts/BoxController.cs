@@ -55,6 +55,33 @@ public class BoxController : MonoBehaviour {
         img.color = newColor;
     }
 
+    public void StartFlash(Color color, float lowAlpha, float highAlpha, int numFlashes, float flashTime) {
+        StartCoroutine(GenerateFlash(color, lowAlpha, highAlpha, numFlashes, flashTime));
+    }
+
+    public void StartFlash(Color color, int numFlashes, float flashTime) {
+        StartFlash(color, 0f, 0.3f, numFlashes, flashTime);
+    }
+
+    public void StartFlash(Color color) {
+        StartFlash(color, 3, 2);
+    }
+
+    private IEnumerator GenerateFlash(Color color, float lowAlpha, float highAlpha, int numFlashes, float flashTime) {
+        Color topHighlight = color;
+        color.a = highAlpha;
+        Color botHighlight = color;
+        color.a = lowAlpha;
+        for (int fNum=0; fNum<numFlashes; fNum++) {
+            int numIterations = 20;
+            for (int i=0; i<numIterations; i++) {
+                SetHighlight(Color.Lerp(botHighlight, topHighlight, i < numIterations/2 ? i / (float)(numIterations/2) : (numIterations - i) / (float)(numIterations - numIterations/2)));
+                yield return new WaitForSeconds(flashTime / (float)(numFlashes * numIterations));
+            }
+        }
+        SetHighlight(new Color(0, 0, 0, 0));
+    }
+
     public void SetFull(string s, bool fromUI) {
         if (given && fromUI) return;
         currentFull = s;
