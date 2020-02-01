@@ -256,12 +256,16 @@ public class VisualBoardController : MonoBehaviour {
         boxes[i, j].ToggleCentre(s);
     }
 
-    public void SetColor(int i, int j, Color c, bool save) {
-        boxes[i, j].SetColor(c, save);
+    public void SetColor(int i, int j, Color c) {
+        boxes[i, j].SetColor(c);
+    }
+
+    public void SetHighlight(int i, int j, Color c) {
+        boxes[i, j].SetHighlight(c);
     }
 
     public void ResetColor(int i, int j) {
-        boxes[i, j].SetColor(boxes[i, j].currentColor, true);
+        boxes[i, j].SetColor(boxes[i, j].currentColor);
     }
 
     public void Clear(int i, int j) {

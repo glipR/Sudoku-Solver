@@ -42,11 +42,17 @@ public class BoxController : MonoBehaviour {
         editable = false;
     }
 
-    public void SetColor(Color c, bool update) {
-        if (update)
-            currentColor = c;
+    public void SetColor(Color c) {
+        currentColor = c;
         var img = GetComponent<Image>();
         img.color = c;
+    }
+
+    public void SetHighlight(Color c) {
+        var img = GetComponent<Image>();
+        Color newColor = (1-c.a) * currentColor + c * c.a;
+        newColor.a = 1;
+        img.color = newColor;
     }
 
     public void SetFull(string s, bool fromUI) {
