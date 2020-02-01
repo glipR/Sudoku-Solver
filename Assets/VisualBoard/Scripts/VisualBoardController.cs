@@ -283,6 +283,7 @@ public class VisualBoardController : MonoBehaviour {
 
     public void Clear(int i, int j) {
         boxes[i, j].Clear();
+        sudoku.boxes[i*sudoku.settings.numVertical+j].answer = "";
     }
 
 }
