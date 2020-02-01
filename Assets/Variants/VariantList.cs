@@ -12,7 +12,8 @@ public static class VariantList {
 
     public enum VariantType {
         Base,
-        Sandwich
+        Sandwich,
+        Thermo
     }
 
     public static Variant GetVariant(string v) {
@@ -20,6 +21,8 @@ public static class VariantList {
             return BaseVariant();
         if (v == VariantType.Sandwich.ToString())
             return SandwichVariant();
+        if (v == VariantType.Thermo.ToString())
+            return ThermoVariant();
         Debug.Log("Variant Type " + v + ", not handled, returning the base.");
         return BaseVariant();
     }
@@ -37,6 +40,14 @@ public static class VariantList {
         v.solver = new SandwichSolver();
         v.settings = new SandwichSettings();
         v.serializer = new SandwichSerializer();
+        return v;
+    }
+
+    public static Variant ThermoVariant() {
+        Variant v = new Variant();
+        v.solver = new ThermoSolver();
+        v.settings = new ThermoSettings();
+        v.serializer = new ThermoSerializer();
         return v;
     }
 

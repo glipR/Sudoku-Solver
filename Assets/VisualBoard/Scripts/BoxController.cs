@@ -12,6 +12,8 @@ public class BoxController : MonoBehaviour {
     public static float cornerRatio = 0.3f;
     public static Color givenColor = new Color(0f, 0f, 1f);
 
+    public static GameObject layerPrefab;
+
     public (int x, int y) position;
     public Color currentColor = new Color(1, 1, 1, 1);
     public string currentFull = "";
@@ -188,6 +190,14 @@ public class BoxController : MonoBehaviour {
     private void OnMouseEnter() {
         if (!editable) return;
         if (Input.GetMouseButton(0)) BoxSelectionManager.instance.EnsureSelected(this);
+    }
+
+    // Overlays and Underlays
+    public void AddUnderlay(Sprite sprite) {
+        var obj = Instantiate(layerPrefab, transform);
+        var rt = obj.GetComponent<RectTransform>();
+        var img = obj.GetComponent<Image>();
+        img.sprite = sprite;
     }
 
 }
