@@ -9,6 +9,7 @@ public class BoardSolver {
     bool[,] solved;
     uint[,] options;
     uint[,] final_state;
+    List<(int x, int y)> solvedCoords = new List<(int x, int y)>();
 
     public void InitializeSolver(Sudoku beginning_state) {
         sudoku = beginning_state;
@@ -37,13 +38,21 @@ public class BoardSolver {
 
     public uint[,] Solve(Sudoku beginning_state) {
         InitializeSolver(beginning_state);
-        if (!ApplyRules()) {
+        if (!ApplyRules(false)) {
             Debug.Log("Impossible to complete!");
         }
         return final_state;
     }
 
-    public bool ApplyRules() {
+    public (int x, int y) GetBoxHint(Sudoku beginning_state) {
+        InitializeSolver(beginning_state);
+        if (ApplyRules(true)) {
+            return solvedCoords[0];
+        }
+        return (-1, -1);
+    }
+
+    public bool ApplyRules(bool stopOnFirstSolve) {
         bool changed = false;
         while (true) {
             changed = false;
@@ -61,6 +70,7 @@ public class BoardSolver {
                             if ((options[i, j] & (1u << (int)(v - 1))) != 0) break;
                         }
                         SetValue(i, j, v, true);
+                        if (stopOnFirstSolve) return true;
                     }
                 }
             }
@@ -95,6 +105,7 @@ public class BoardSolver {
         if (change) {
             solved[i, j] = true;
             final_state[i, j] = v;
+            solvedCoords.Add((i, j));
             PropogateSolve(i, j);
         }
     }

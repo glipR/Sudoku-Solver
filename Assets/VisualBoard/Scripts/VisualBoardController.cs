@@ -215,6 +215,12 @@ public class VisualBoardController : MonoBehaviour {
         }
     }
 
+    public void GetHint() {
+        (int x, int y) hint = solver.GetBoxHint(sudoku);
+        if (hint.x == -1) return;
+        boxes[hint.x, hint.y].StartFlash(new Color(1, 0, 1));
+    }
+
     public void ResetView() {
         if (startState.boxes.Length > 0) {
             startState.DeserializeToBoard(this);
