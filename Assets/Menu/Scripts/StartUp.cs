@@ -27,6 +27,7 @@ public class StartUp : MonoBehaviour {
         } else if (sceneName == SceneController.GAME) {
             GameObject.Find("SolveButton").GetComponent<Button>().onClick.AddListener(VisualBoardController.instance.SolveBoard);
             GameObject.Find("HintButton").GetComponent<Button>().onClick.AddListener(VisualBoardController.instance.GetHint);
+            GameObject.Find("CheckButton").GetComponent<Button>().onClick.AddListener(VisualBoardController.instance.GenerateErrors);
         }
     }
 

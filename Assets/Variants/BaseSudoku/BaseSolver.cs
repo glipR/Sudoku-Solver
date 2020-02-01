@@ -76,4 +76,45 @@ public class BaseSolver : ISolverSettings {
         }
         return changed;
     }
+
+    public override List<BoardNotifications.BoardError> GetErrors(BoardSolver bs) {
+        List<BoardNotifications.BoardError> errors = new List<BoardNotifications.BoardError>();
+        for (uint v=1; v<=bs.sudoku.settings.numEntryTypes; v++) {
+            for (int i=0; i<bs.sudoku.settings.numHorizontal; i++) {
+                List<(int x, int y)> boxes = new List<(int x, int y)>();
+                for (int j=0; j<bs.sudoku.settings.numVertical; j++) {
+                    if (bs.Equals(i, j, v)) {
+                        boxes.Add((i, j));
+                    }
+                }
+                if (boxes.Count > 1) {
+                    errors.Add(new BoardNotifications.BoardError(BoardNotifications.ErrorType.COL_INVALID, boxes, "This column can only have a single " + v));
+                }
+            }
+            for (int j=0; j<bs.sudoku.settings.numVertical; j++) {
+                List<(int x, int y)> boxes = new List<(int x, int y)>();
+                for (int i=0; i<bs.sudoku.settings.numHorizontal; i++) {
+                    if (bs.Equals(i, j, v)) {
+                        boxes.Add((i, j));
+                    }
+                }
+                if (boxes.Count > 1) {
+                    errors.Add(new BoardNotifications.BoardError(BoardNotifications.ErrorType.ROW_INVALID, boxes, "This row can only have a single " + v));
+                }
+            }
+            for (int a=0; a<bs.sudoku.settings.numHorizontal; a+=(int)(bs.sudoku.settings.numHorizontalThins + 1)) {
+                for (int b=0; b<bs.sudoku.settings.numVertical; b+=(int)(bs.sudoku.settings.numVerticalThins + 1)) {
+                    // Check for box (a, b)
+                    List<(int x, int y)> boxes = new List<(int x, int y)>();
+                    for (int x=0; x<(bs.sudoku.settings.numHorizontalThins + 1); x++) for (int y=0; y<(bs.sudoku.settings.numVerticalThins + 1); y++) if (bs.Equals(a+x, b+y, v)) {
+                        boxes.Add((a+x, b+y));
+                    }
+                    if (boxes.Count > 1) {
+                        errors.Add(new BoardNotifications.BoardError(BoardNotifications.ErrorType.BOX_INVALID, boxes, "This box can only have a single " + v));
+                    }
+                }
+            }
+        }
+        return errors;
+    }
 }

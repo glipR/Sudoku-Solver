@@ -13,5 +13,6 @@ public abstract class ISolverSettings {
 
     public abstract void PropogateChange(int i, int j, BoardSolver bs);
     public abstract bool RestrictGrid(BoardSolver bs);
+    public abstract List<BoardNotifications.BoardError> GetErrors(BoardSolver bs);
 
 }

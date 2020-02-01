@@ -215,6 +215,13 @@ public class VisualBoardController : MonoBehaviour {
         }
     }
 
+    public void GenerateErrors() {
+        var errors = solver.CollectErrors(sudoku);
+        foreach (var m in errors) {
+            Debug.Log(m.displayMessage);
+        }
+    }
+
     public void GetHint() {
         (int x, int y) hint = solver.GetBoxHint(sudoku);
         if (hint.x == -1) return;

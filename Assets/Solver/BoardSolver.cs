@@ -84,6 +84,15 @@ public class BoardSolver {
         return true;
     }
 
+    public List<BoardNotifications.BoardError> CollectErrors(Sudoku beginning_state) {
+        List<BoardNotifications.BoardError> all_errors = new List<BoardNotifications.BoardError>();
+        InitializeSolver(beginning_state);
+        foreach (Variant v in sudoku.variants) {
+            all_errors.AddRange(v.solver.GetErrors(this));
+        }
+        return all_errors;
+    }
+
     public void PropogateSolve(int i, int j) {
         if (!solved[i, j]) return;
         foreach (Variant v in sudoku.variants) {
@@ -112,6 +121,14 @@ public class BoardSolver {
 
     public bool Allows(int i, int j, uint v) {
         return (options[i, j] & (1u << (int)(v - 1))) != 0;
+    }
+
+    public bool Equals(int i, int j, uint v) {
+        return (solved[i, j] && final_state[i, j] == v);
+    }
+
+    public bool Solved(int i, int j) {
+        return solved[i, j];
     }
 
     public List<uint> GetOptions(int i, int j) {
