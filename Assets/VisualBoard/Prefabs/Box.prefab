@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1132240733404553099}
   - component: {fileID: 7388163989789273638}
   - component: {fileID: 133384750262936152}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Box
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,6 +97,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7caddc012ce06b4bbb2b99ea95d2d6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  layerPrefab: {fileID: 6022689535102414175, guid: b3d4915e34d18784fbcf1e700fe3a367,
+    type: 3}
   currentColor: {r: 1, g: 1, b: 1, a: 1}
   currentFull: 
   cornerElements: 
@@ -141,7 +143,7 @@ GameObject:
   - component: {fileID: 3505156526434623753}
   - component: {fileID: 2324747413680437993}
   - component: {fileID: 4527947486383878533}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Corner2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -196,7 +198,7 @@ MonoBehaviour:
   m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0301c54a525997e48b70808e5e99fb11, type: 2}
-  m_sharedMaterial: {fileID: 6739868707827522859, guid: 0301c54a525997e48b70808e5e99fb11,
+  m_sharedMaterial: {fileID: -7536295737878409782, guid: 0301c54a525997e48b70808e5e99fb11,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -297,7 +299,7 @@ GameObject:
   - component: {fileID: 4841187017910509315}
   - component: {fileID: 5527160477636465865}
   - component: {fileID: 3404922709515322374}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Corner7
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -352,7 +354,7 @@ MonoBehaviour:
   m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0301c54a525997e48b70808e5e99fb11, type: 2}
-  m_sharedMaterial: {fileID: 6739868707827522859, guid: 0301c54a525997e48b70808e5e99fb11,
+  m_sharedMaterial: {fileID: -7536295737878409782, guid: 0301c54a525997e48b70808e5e99fb11,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -453,7 +455,7 @@ GameObject:
   - component: {fileID: 8162162638569307968}
   - component: {fileID: 751444722541407479}
   - component: {fileID: 3777194647870716471}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Corner4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -508,7 +510,7 @@ MonoBehaviour:
   m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0301c54a525997e48b70808e5e99fb11, type: 2}
-  m_sharedMaterial: {fileID: 6739868707827522859, guid: 0301c54a525997e48b70808e5e99fb11,
+  m_sharedMaterial: {fileID: -7536295737878409782, guid: 0301c54a525997e48b70808e5e99fb11,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -609,7 +611,7 @@ GameObject:
   - component: {fileID: 210250090574158369}
   - component: {fileID: 6720333680332085014}
   - component: {fileID: 710602842558785805}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Corner5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -664,7 +666,7 @@ MonoBehaviour:
   m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0301c54a525997e48b70808e5e99fb11, type: 2}
-  m_sharedMaterial: {fileID: 6739868707827522859, guid: 0301c54a525997e48b70808e5e99fb11,
+  m_sharedMaterial: {fileID: -7536295737878409782, guid: 0301c54a525997e48b70808e5e99fb11,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -765,7 +767,7 @@ GameObject:
   - component: {fileID: 2851604940184461968}
   - component: {fileID: 6462525180264334056}
   - component: {fileID: 7598381877685234323}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: CentreNum
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -820,7 +822,7 @@ MonoBehaviour:
   m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0301c54a525997e48b70808e5e99fb11, type: 2}
-  m_sharedMaterial: {fileID: 6739868707827522859, guid: 0301c54a525997e48b70808e5e99fb11,
+  m_sharedMaterial: {fileID: -7536295737878409782, guid: 0301c54a525997e48b70808e5e99fb11,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -921,7 +923,7 @@ GameObject:
   - component: {fileID: 1434094186705643806}
   - component: {fileID: 7701664509649583259}
   - component: {fileID: 6363446060019859572}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Corner8
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -976,7 +978,7 @@ MonoBehaviour:
   m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0301c54a525997e48b70808e5e99fb11, type: 2}
-  m_sharedMaterial: {fileID: 6739868707827522859, guid: 0301c54a525997e48b70808e5e99fb11,
+  m_sharedMaterial: {fileID: -7536295737878409782, guid: 0301c54a525997e48b70808e5e99fb11,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1077,7 +1079,7 @@ GameObject:
   - component: {fileID: 909486833928402155}
   - component: {fileID: 1863323358650517727}
   - component: {fileID: 1967058116939537985}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Corner6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1132,7 +1134,7 @@ MonoBehaviour:
   m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0301c54a525997e48b70808e5e99fb11, type: 2}
-  m_sharedMaterial: {fileID: 6739868707827522859, guid: 0301c54a525997e48b70808e5e99fb11,
+  m_sharedMaterial: {fileID: -7536295737878409782, guid: 0301c54a525997e48b70808e5e99fb11,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1233,7 +1235,7 @@ GameObject:
   - component: {fileID: 8848556039981123587}
   - component: {fileID: 8687870994187651232}
   - component: {fileID: 1709838968545916383}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: FullNum
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1288,7 +1290,7 @@ MonoBehaviour:
   m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0301c54a525997e48b70808e5e99fb11, type: 2}
-  m_sharedMaterial: {fileID: 6739868707827522859, guid: 0301c54a525997e48b70808e5e99fb11,
+  m_sharedMaterial: {fileID: -7536295737878409782, guid: 0301c54a525997e48b70808e5e99fb11,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1389,7 +1391,7 @@ GameObject:
   - component: {fileID: 842669856544015110}
   - component: {fileID: 1993405981493925491}
   - component: {fileID: 4161262143581160861}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Corner3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1444,7 +1446,7 @@ MonoBehaviour:
   m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0301c54a525997e48b70808e5e99fb11, type: 2}
-  m_sharedMaterial: {fileID: 6739868707827522859, guid: 0301c54a525997e48b70808e5e99fb11,
+  m_sharedMaterial: {fileID: -7536295737878409782, guid: 0301c54a525997e48b70808e5e99fb11,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1545,7 +1547,7 @@ GameObject:
   - component: {fileID: 3818532587867587538}
   - component: {fileID: 8569997655090662734}
   - component: {fileID: 6962188656222724384}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Corner1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1600,7 +1602,7 @@ MonoBehaviour:
   m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0301c54a525997e48b70808e5e99fb11, type: 2}
-  m_sharedMaterial: {fileID: 6739868707827522859, guid: 0301c54a525997e48b70808e5e99fb11,
+  m_sharedMaterial: {fileID: -7536295737878409782, guid: 0301c54a525997e48b70808e5e99fb11,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}

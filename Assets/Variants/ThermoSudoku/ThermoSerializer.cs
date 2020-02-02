@@ -13,6 +13,7 @@ public class ThermoSerializer : ISerializer {
 
     [System.Serializable]
     public class ThermoRules {
+        [System.Serializable]
         public class BoxPair {
             public int X1;
             public int Y1;
@@ -36,7 +37,7 @@ public class ThermoSerializer : ISerializer {
         bool[,,] outgoing = new bool[vbc.sudoku.settings.numHorizontal, vbc.sudoku.settings.numVertical, 4];
         for (int i=0; i<vbc.sudoku.settings.numHorizontal; i++) for (int j=0; j<vbc.sudoku.settings.numVertical; j++) for (int k=0; k<4; k++) {
             incoming[i, j, k] = false;
-            outgoing[i, j, k] = true;
+            outgoing[i, j, k] = false;
         }
         foreach (ThermoRules.BoxPair bp in serializedObject.thermo.dependencies) {
             // Calculate direction
@@ -49,7 +50,7 @@ public class ThermoSerializer : ISerializer {
                 else dir = 0;
             }
             outgoing[bp.X2, bp.Y2, dir] = true;
-            incoming[bp.X1, bp.X2, (dir+2)%4] = true;
+            incoming[bp.X1, bp.Y1, (dir+2)%4] = true;
         }
 
         for (int i=0; i<vbc.sudoku.settings.numHorizontal; i++) for (int j=0; j<vbc.sudoku.settings.numVertical; j++) {
@@ -66,32 +67,131 @@ public class ThermoSerializer : ISerializer {
                 // Base
                 if (amountOutgoing == 1) {
                     // Single line - sort out direction
-                } else if (amountOutgoing == 4) {
+                    Sprite s = Resources.Load<Sprite>("Default/Thermos/Base1Connection");
+                    int rotation = 0;
+                    if (outgoing[i, j, 1]) {
+                        rotation = 270;
+                    } else if (outgoing[i, j, 2]) {
+                        rotation = 180;
+                    } else if (outgoing[i, j, 3]) {
+                        rotation = 90;
+                    }
+                    vbc.boxes[i, j].AddUnderlay(s, rotation);
+                }
+                else if (amountOutgoing == 4) {
                     // All directions - easy
-                } else if (amountOutgoing == 3) {
+                    Sprite s = Resources.Load<Sprite>("Default/Thermos/Base4Connections");
+                    vbc.boxes[i, j].AddUnderlay(s, 0);
+                }
+                else if (amountOutgoing == 3) {
                     // One missing, rotate to align
-                } else if (amountOutgoing == 2) {
+                    Sprite s = Resources.Load<Sprite>("Default/Thermos/Base3Connections");
+                    int rotation = 0;
+                    if (!outgoing[i, j, 0]) {
+                        rotation = 270;
+                    } else if (!outgoing[i, j, 1]) {
+                        rotation = 180;
+                    } else if (!outgoing[i, j, 2]) {
+                        rotation = 90;
+                    }
+                    vbc.boxes[i, j].AddUnderlay(s, rotation);
+                }
+                else if (amountOutgoing == 2) {
                     // Corner or opposite.
                     if (outgoing[i, j, 0] == outgoing[i, j, 2]) {
                         // Opposite.
+                        Sprite s = Resources.Load<Sprite>("Default/Thermos/Base2ConnectionsOpposite");
+                        int rotation = 0;
+                        if (outgoing[i, j, 1]) rotation = 90;
+                        vbc.boxes[i, j].AddUnderlay(s, rotation);
                     } else {
                         // Corner.
+                        Sprite s = Resources.Load<Sprite>("Default/Thermos/Base2ConnectionsCorner");
+                        int rotation;
+                        if (outgoing[i, j, 0]) {
+                            if (outgoing[i, j, 1]) {
+                                rotation = 0;
+                            } else {
+                                rotation = 90;
+                            }
+                        } else {
+                            if (outgoing[i, j, 1]) {
+                                rotation = 270;
+                            } else {
+                                rotation = 180;
+                            }
+                        }
+                        vbc.boxes[i, j].AddUnderlay(s, rotation);
                     }
                 }
-            } else {
+            }
+            else {
                 // Line / Ending.
                 if (amountEither == 1) {
-                    // End node - sort out direction
-                } else if (amountEither == 4) {
+                    Sprite s = Resources.Load<Sprite>("Default/Thermos/Line1Connection");
+                    int rotation = 0;
+                    if (outgoing[i, j, 0] || incoming[i, j, 0]) {
+                        rotation = 180;
+                    }
+                    else if (outgoing[i, j, 1] || incoming[i, j, 1]) {
+                        rotation = 90;
+                    }
+                    else if (outgoing[i, j, 3] || incoming[i, j, 3]) {
+                        rotation = 270;
+                    }
+                    vbc.boxes[i, j].AddUnderlay(s, rotation);
+                }
+                else if (amountEither == 4) {
                     // All directions - easy
-                } else if (amountEither == 3) {
+                    Sprite s = Resources.Load<Sprite>("Default/Thermos/Line4Connections");
+                    vbc.boxes[i, j].AddUnderlay(s, 0);
+                }
+                else if (amountEither == 3) {
                     // One missing, rotate to align
-                } else if (amountEither == 2) {
+                    Sprite s = Resources.Load<Sprite>("Default/Thermos/Line3Connections");
+                    int rotation = 0;
+                    if (!(outgoing[i, j, 0] || incoming[i, j, 0])) {
+                        rotation = 270;
+                    }
+                    else if (!(outgoing[i, j, 1] || incoming[i, j, 1])) {
+                        rotation = 180;
+                    }
+                    else if (!(outgoing[i, j, 2] || incoming[i, j, 2])) {
+                        rotation = 90;
+                    }
+                    vbc.boxes[i, j].AddUnderlay(s, rotation);
+                }
+                else if (amountEither == 2) {
                     // Corner or opposite.
                     if ((incoming[i, j, 0] || outgoing[i, j, 0]) == (incoming[i, j, 2] || outgoing[i, j, 2])) {
                         // Opposite.
+                        Sprite s = Resources.Load<Sprite>("Default/Thermos/Line2ConnectionsOpposite");
+                        int rotation = 0;
+                        if (outgoing[i, j, 1] || incoming[i, j, 1]) {
+                            rotation = 90;
+                        }
+                        vbc.boxes[i, j].AddUnderlay(s, rotation);
                     } else {
                         // Corner.
+                        Sprite s = Resources.Load<Sprite>("Default/Thermos/Line2ConnectionsCorner");
+                        int rotation = 0;
+                        if (outgoing[i, j, 0] || incoming[i, j, 0]) {
+                            if (outgoing[i, j, 1] || incoming[i, j, 1]) {
+                                rotation = 90;
+                            }
+                            else {
+                                rotation = 180;
+                            }
+                        }
+                        else {
+                            if (outgoing[i, j, 1] || incoming[i, j, 1]) {
+                                rotation = 0;
+                            }
+                            else {
+                                rotation = 270;
+                            }
+                        }
+                        vbc.boxes[i, j].AddUnderlay(s, rotation);
                     }
                 }
             }

@@ -12,7 +12,8 @@ public class BoxController : MonoBehaviour {
     public static float cornerRatio = 0.3f;
     public static Color givenColor = new Color(0, 19/255f, 87/255f);
 
-    public static GameObject layerPrefab;
+    [SerializeField]
+    public GameObject layerPrefab;
 
     public (int x, int y) position;
     public Color currentColor = new Color(1, 1, 1, 1);
@@ -195,9 +196,9 @@ public class BoxController : MonoBehaviour {
     }
 
     // Overlays and Underlays
-    public void AddUnderlay(Sprite sprite) {
+    public void AddUnderlay(Sprite sprite, int rotation) {
         var obj = Instantiate(layerPrefab, transform);
-        var rt = obj.GetComponent<RectTransform>();
+        obj.transform.Rotate(Vector3.forward, rotation);
         var img = obj.GetComponent<Image>();
         img.sprite = sprite;
     }
