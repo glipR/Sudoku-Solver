@@ -40,6 +40,12 @@ public class BoxController : MonoBehaviour {
 
     private void Awake() {
         centreMode = false;
+        var canvas = transform.Find("UnderlayCanvas").GetComponent<Canvas>();
+        canvas.sortingLayerName = "TopCanvas";
+        canvas.sortingOrder = 0;
+        canvas = transform.Find("ColorCanvas").GetComponent<Canvas>();
+        canvas.sortingLayerName = "TopCanvas";
+        canvas.sortingOrder = -1;
     }
 
     public void SetUneditable() {
@@ -48,12 +54,12 @@ public class BoxController : MonoBehaviour {
 
     public void SetColor(Color c) {
         currentColor = c;
-        var img = GetComponent<Image>();
+        var img = transform.Find("ColorCanvas/Image").GetComponent<Image>();
         img.color = c;
     }
 
     public void SetHighlight(Color c) {
-        var img = GetComponent<Image>();
+        var img = transform.Find("ColorCanvas/Image").GetComponent<Image>();
         Color newColor = (1-c.a) * currentColor + c * c.a;
         newColor.a = 1;
         img.color = newColor;
@@ -197,7 +203,7 @@ public class BoxController : MonoBehaviour {
 
     // Overlays and Underlays
     public void AddUnderlay(Sprite sprite, int rotation) {
-        var obj = Instantiate(layerPrefab, transform);
+        var obj = Instantiate(layerPrefab, transform.Find("UnderlayCanvas"));
         obj.transform.Rotate(Vector3.forward, rotation);
         var img = obj.GetComponent<Image>();
         img.sprite = sprite;
