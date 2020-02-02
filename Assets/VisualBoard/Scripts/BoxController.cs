@@ -10,7 +10,7 @@ public class BoxController : MonoBehaviour {
     public static int botBox = -2;
 
     public static float cornerRatio = 0.3f;
-    public static Color givenColor = new Color(0f, 0f, 1f);
+    public static Color givenColor = new Color(0, 19/255f, 87/255f);
 
     public static GameObject layerPrefab;
 

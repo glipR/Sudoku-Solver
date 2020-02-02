@@ -13,7 +13,7 @@ public class ThermoSerializer : ISerializer {
 
     [System.Serializable]
     public class ThermoRules {
-        public class BoxPair { 
+        public class BoxPair {
             public int X1;
             public int Y1;
             public int X2;
@@ -32,8 +32,8 @@ public class ThermoSerializer : ISerializer {
         serializedObject = JsonUtility.FromJson<SerializedObject>(serializiationString);
         // Find out what to apply to what box.
         // URDL is direction 0123.
-        bool[,,] incoming = new bool[vbc.sudoku.settings.numHorizontal, vbc.sudko.settings.numVertical, 4];
-        bool[,,] outgoing = new bool[vbc.sudoku.settings.numHorizontal, vbc.sudko.settings.numVertical, 4];
+        bool[,,] incoming = new bool[vbc.sudoku.settings.numHorizontal, vbc.sudoku.settings.numVertical, 4];
+        bool[,,] outgoing = new bool[vbc.sudoku.settings.numHorizontal, vbc.sudoku.settings.numVertical, 4];
         for (int i=0; i<vbc.sudoku.settings.numHorizontal; i++) for (int j=0; j<vbc.sudoku.settings.numVertical; j++) for (int k=0; k<4; k++) {
             incoming[i, j, k] = false;
             outgoing[i, j, k] = true;
