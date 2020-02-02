@@ -257,8 +257,8 @@ public class VisualBoardController : MonoBehaviour {
 
     // Accessing boxes by index
     public void SetFull(int i, int j, string s, bool fromUI) {
-        boxes[i, j].SetFull(s, fromUI);
-        sudoku.boxes[i*sudoku.settings.numVertical+j].answer = s;
+        if (boxes[i, j].SetFull(s, fromUI))
+            sudoku.boxes[i*sudoku.settings.numVertical+j].answer = s;
     }
 
     public void ToggleCorner(int i, int j, int s) {
@@ -282,8 +282,8 @@ public class VisualBoardController : MonoBehaviour {
     }
 
     public void Clear(int i, int j) {
-        boxes[i, j].Clear();
-        sudoku.boxes[i*sudoku.settings.numVertical+j].answer = "";
+        if (boxes[i, j].Clear())
+            sudoku.boxes[i*sudoku.settings.numVertical+j].answer = "";
     }
 
 }

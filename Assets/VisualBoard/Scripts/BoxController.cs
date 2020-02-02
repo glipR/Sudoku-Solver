@@ -85,8 +85,8 @@ public class BoxController : MonoBehaviour {
         SetHighlight(new Color(0, 0, 0, 0));
     }
 
-    public void SetFull(string s, bool fromUI) {
-        if (given && fromUI) return;
+    public bool SetFull(string s, bool fromUI) {
+        if (given && fromUI) return false;
         currentFull = s;
         var txt = transform.Find("FullNum").GetComponent<TextMeshProUGUI>();
         txt.text = s;
@@ -100,6 +100,7 @@ public class BoxController : MonoBehaviour {
             var t = transform.Find("Corner" + (i+1)).GetComponent<TextMeshProUGUI>();
             t.text = "";
         }
+        return true;
     }
 
     public void ToggleCentre(int e) {
@@ -172,13 +173,14 @@ public class BoxController : MonoBehaviour {
         }
     }
 
-    public void Clear() {
-        if (given) return;
+    public bool Clear() {
+        if (given) return false;
         this.currentColor = new Color(1, 1, 1, 1);
         this.centreElements.Clear();
         this.cornerElements.Clear();
         this.SetFull("", false);
         this.centreMode = false;
+        return true;
     }
 
     private void OnMouseDown() {
