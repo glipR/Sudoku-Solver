@@ -10,7 +10,9 @@ public class BoardNotifications {
         COL_INVALID,
         BOX_INVALID,
         // Arithmetic
-        SUM_INVALID
+        SUM_INVALID,
+        // Generic
+        SELECTION_INVALID
     }
 
     public class BoardError {
