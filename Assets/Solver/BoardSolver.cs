@@ -100,8 +100,39 @@ public class BoardSolver {
         }
     }
 
-    public void EnsureNotPossible(int i, int j, uint v) {
-        if (Allows(i, j, v)) options[i, j] -= 1u << (int)(v - 1);
+    public bool EnsureNotPossible(int i, int j, uint v) {
+        if (Allows(i, j, v)) {
+            options[i, j] -= 1u << (int)(v - 1);
+            return true;
+        }
+        return false;
+    }
+
+    public bool EnsureLarger(int x1, int y1, int x2, int y2) {
+        int smallest_value = -1;
+        for (int i=1; i<=sudoku.settings.numEntryTypes; i++) {
+            if (Allows(x2, y2, (uint)i)) {
+                smallest_value = i;
+                break;
+            }
+        }
+        if (smallest_value == -1) return false;
+        bool changed = false;
+        for (int i=1; i<=smallest_value; i++) {
+            changed |= EnsureNotPossible(x1, y1, (uint)i);
+        }
+        int largest_value = -1;
+        for (int i=sudoku.settings.numEntryTypes; i>0; i--) {
+            if (Allows(x1, y1, (uint)i)) {
+                largest_value = i;
+                break;
+            }
+        }
+        if (largest_value == -1) return false;
+        for (int i=sudoku.settings.numEntryTypes; i>=largest_value; i--) {
+            changed |= EnsureNotPossible(x2, y2, (uint)i);
+        }
+        return changed;
     }
 
     public uint GetValue(int i, int j) {

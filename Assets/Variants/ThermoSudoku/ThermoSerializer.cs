@@ -5,6 +5,15 @@ using UnityEngine;
 public class ThermoSerializer : ISerializer {
 
     public SerializedObject serializedObject;
+    public bool[,,] incoming;
+    public bool[,,] outgoing;
+
+    public static int[,] directions = {
+        {0, -1},
+        {1, 0},
+        {0, 1},
+        {-1, 0}
+    };
 
     [System.Serializable]
     public class SerializedObject {
@@ -33,24 +42,20 @@ public class ThermoSerializer : ISerializer {
         serializedObject = JsonUtility.FromJson<SerializedObject>(serializiationString);
         // Find out what to apply to what box.
         // URDL is direction 0123.
-        bool[,,] incoming = new bool[vbc.sudoku.settings.numHorizontal, vbc.sudoku.settings.numVertical, 4];
-        bool[,,] outgoing = new bool[vbc.sudoku.settings.numHorizontal, vbc.sudoku.settings.numVertical, 4];
+        incoming = new bool[vbc.sudoku.settings.numHorizontal, vbc.sudoku.settings.numVertical, 4];
+        outgoing = new bool[vbc.sudoku.settings.numHorizontal, vbc.sudoku.settings.numVertical, 4];
         for (int i=0; i<vbc.sudoku.settings.numHorizontal; i++) for (int j=0; j<vbc.sudoku.settings.numVertical; j++) for (int k=0; k<4; k++) {
             incoming[i, j, k] = false;
             outgoing[i, j, k] = false;
         }
         foreach (ThermoRules.BoxPair bp in serializedObject.thermo.dependencies) {
             // Calculate direction
-            int dir;
-            if (bp.X1 != bp.X2) {
-                if (bp.X1 > bp.X2) dir = 1;
-                else dir = 3;
-            } else {
-                if (bp.Y1 > bp.Y2) dir = 2;
-                else dir = 0;
+            for (int dir=0;dir<4;dir++) {
+                if (bp.X1 + directions[dir, 0] == bp.X2 && bp.Y1 + directions[dir, 1] == bp.Y2) {
+                    outgoing[bp.X2, bp.Y2, (dir+2)%4] = true;
+                    incoming[bp.X1, bp.Y1, dir] = true;
+                }
             }
-            outgoing[bp.X2, bp.Y2, dir] = true;
-            incoming[bp.X1, bp.Y1, (dir+2)%4] = true;
         }
 
         for (int i=0; i<vbc.sudoku.settings.numHorizontal; i++) for (int j=0; j<vbc.sudoku.settings.numVertical; j++) {

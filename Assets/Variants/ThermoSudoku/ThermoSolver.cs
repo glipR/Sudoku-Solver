@@ -13,8 +13,19 @@ public class ThermoSolver : ISolverSettings {
 
     public override void PropogateChange(int i, int j, BoardSolver bs) {}
     public override bool RestrictGrid(BoardSolver bs) {
+        bool changed = false;
         var ss = bs.sudoku.GetVariant(VariantList.VariantType.Thermo.ToString()).serializer as ThermoSerializer;
-        return false;
+        for (int i=0; i<bs.sudoku.settings.numHorizontal; i++) for (int j=0; j<bs.sudoku.settings.numVertical; j++) {
+            for (int k=0; k<4; k++) {
+                if (ss.incoming[i, j, k]) {
+                    changed |= bs.EnsureLarger(i, j, i + ThermoSerializer.directions[k, 0], j + ThermoSerializer.directions[k, 1]);
+                }
+                if (ss.outgoing[i, j, k]) {
+                    changed |= bs.EnsureLarger(i + ThermoSerializer.directions[k, 0], j + ThermoSerializer.directions[k, 1], i, j);
+                }
+            }
+        }
+        return changed;
     }
 
     public override List<BoardNotifications.BoardError> GetErrors(BoardSolver bs) {
