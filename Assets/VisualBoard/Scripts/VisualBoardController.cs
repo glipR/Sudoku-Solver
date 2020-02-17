@@ -185,7 +185,7 @@ public class VisualBoardController : MonoBehaviour {
         box.gameObject.name = "RowNum " + i;
         var bc = box.gameObject.GetComponent<BoxController>();
         bc.SetSize(new Vector2(newXLength, newYLength));
-        bc.SetFull(result, false);
+        bc.SetFull(result);
         bc.position = (i, top ? BoxController.topBox : BoxController.botBox);
         lineBoxes[0, top ? 1 : 0, i] = bc;
     }
@@ -202,7 +202,7 @@ public class VisualBoardController : MonoBehaviour {
         box.gameObject.name = "ColNum " + j;
         var bc = box.gameObject.GetComponent<BoxController>();
         bc.SetSize(new Vector2(newXLength, newYLength));
-        bc.SetFull(result, false);
+        bc.SetFull(result);
         bc.position = (top ? BoxController.topBox : BoxController.botBox, j);
         lineBoxes[1, top ? 1 : 0, j] = bc;
     }
@@ -226,7 +226,7 @@ public class VisualBoardController : MonoBehaviour {
     public void SolveBoard() {
         var solved = solver.Solve(sudoku);
         for (int i=0; i<sudoku.settings.numHorizontal; i++) for (int j=0; j<sudoku.settings.numVertical; j++) if (solved[i, j] != 0){
-            boxes[i, j].SetFull(solved[i, j].ToString(), false);
+            SetFull(i, j, solved[i, j].ToString(), false);
         } else {
             foreach (uint x in solver.GetOptions(i, j)) {
                 boxes[i, j].ToggleCentre((int)x);
@@ -288,33 +288,45 @@ public class VisualBoardController : MonoBehaviour {
     }
 
     public void SetFull(int i, int j, string s, bool fromUI) {
-        if (GetBox(i, j).SetFull(s, fromUI))
-            sudoku.SetBoxAnswer(i, j, s);
+        var box = GetBox(i, j);
+        if (interactionState == InteractionState.VIEWING && fromUI) return;
+        if (box.given && interactionState == InteractionState.PLAYING && fromUI) return;
+        if (interactionState == InteractionState.EDITING) box.given = true;
+        box.SetFull(s);
+        sudoku.SetBoxAnswer(i, j, s);
     }
 
     public void ToggleCorner(int i, int j, int s) {
-        GetBox(i, j).ToggleCorner(s);
+        var box = GetBox(i, j);
+        box.ToggleCorner(s);
     }
 
     public void ToggleCentre(int i, int j, int s) {
-        GetBox(i, j).ToggleCentre(s);
+        var box = GetBox(i, j);
+        box.ToggleCentre(s);
     }
 
     public void SetColor(int i, int j, Color c) {
-        GetBox(i, j).SetColor(c);
+        var box = GetBox(i, j);
+        box.SetColor(c);
     }
 
     public void SetHighlight(int i, int j, Color c) {
-        GetBox(i, j).SetHighlight(c);
+        var box = GetBox(i, j);
+        box.SetHighlight(c);
     }
 
     public void ResetColor(int i, int j) {
-        GetBox(i, j).SetColor(GetBox(i, j).currentColor);
+        var box = GetBox(i, j);
+        box.SetColor(box.currentColor);
     }
 
-    public void Clear(int i, int j) {
-        if (GetBox(i, j).Clear())
-            sudoku.SetBoxAnswer(i, j, "");
+    public void Clear(int i, int j, bool fromUI) {
+        var box = GetBox(i, j);
+        if (interactionState == InteractionState.VIEWING && fromUI) return;
+        if (interactionState == InteractionState.PLAYING && fromUI && box.given) return;
+        box.Clear();
+        sudoku.SetBoxAnswer(i, j, "");
     }
 
 }

@@ -50,7 +50,7 @@ public class BoxSelectionManager : MonoBehaviour {
                     foreach (var box in selected) VisualBoardController.instance.SetColor(box.x, box.y, GetColor(i));
             }
         }
-        if (Input.GetKeyDown(KeyCode.Backspace)) foreach (var box in selected) VisualBoardController.instance.Clear(box.x, box.y);
+        if (Input.GetKeyDown(KeyCode.Backspace)) foreach (var box in selected) VisualBoardController.instance.Clear(box.x, box.y, true);
     }
 
     public void SetSelected(BoxController select) {
@@ -66,6 +66,7 @@ public class BoxSelectionManager : MonoBehaviour {
         foreach (var box in selected) {
             VisualBoardController.instance.ResetColor(box.x, box.y);
         }
+        // This needs to be revamped in a separate method on VisualBoardController.
         for (int i=0; i<selected.Count; i++) {
             if (
                 0 <= selected[i].x + shift.x &&

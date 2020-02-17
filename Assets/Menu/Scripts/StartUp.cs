@@ -18,6 +18,7 @@ public class StartUp : MonoBehaviour {
         canvas.worldCamera = Camera.main;
         VisualBoardController.instance.SetView(sceneName);
         if (sceneName == SceneController.SELECTION) {
+            VisualBoardController.instance.interactionState = VisualBoardController.InteractionState.VIEWING;
             GameObject.Find("PlayButton").GetComponent<Button>().onClick.AddListener(() => {
                 if (ListController.instance.clicked)
                     SceneController.instance.LoadGame();
@@ -25,6 +26,7 @@ public class StartUp : MonoBehaviour {
                     Debug.Log("Select a board!");
             });
         } else if (sceneName == SceneController.GAME) {
+            VisualBoardController.instance.interactionState = VisualBoardController.InteractionState.PLAYING;
             GameObject.Find("SolveButton").GetComponent<Button>().onClick.AddListener(VisualBoardController.instance.SolveBoard);
             GameObject.Find("HintButton").GetComponent<Button>().onClick.AddListener(VisualBoardController.instance.GetHint);
             GameObject.Find("CheckButton").GetComponent<Button>().onClick.AddListener(VisualBoardController.instance.GenerateErrors);

@@ -15,6 +15,7 @@ public class BoxController : MonoBehaviour {
     [SerializeField]
     public GameObject layerPrefab;
 
+    public bool visible;
     public (int x, int y) position;
     public Color currentColor = new Color(1, 1, 1, 1);
     public string currentFull = "";
@@ -25,7 +26,6 @@ public class BoxController : MonoBehaviour {
 
     public bool centreMode;
     public bool given = false;
-    public bool editable = true;
 
     private Vector2[] anchors = {
         new Vector2(0, 0),
@@ -46,10 +46,7 @@ public class BoxController : MonoBehaviour {
         canvas = transform.Find("ColorCanvas").GetComponent<Canvas>();
         canvas.sortingLayerName = "TopCanvas";
         canvas.sortingOrder = -1;
-    }
-
-    public void SetUneditable() {
-        editable = false;
+        visible = true;
     }
 
     public void SetColor(Color c) {
@@ -92,8 +89,7 @@ public class BoxController : MonoBehaviour {
         SetHighlight(new Color(0, 0, 0, 0));
     }
 
-    public bool SetFull(string s, bool fromUI) {
-        if (given && fromUI) return false;
+    public void SetFull(string s) {
         currentFull = s;
         var txt = transform.Find("FullNum").GetComponent<TextMeshProUGUI>();
         txt.text = s;
@@ -107,7 +103,6 @@ public class BoxController : MonoBehaviour {
             var t = transform.Find("Corner" + (i+1)).GetComponent<TextMeshProUGUI>();
             t.text = "";
         }
-        return true;
     }
 
     public void ToggleCentre(int e) {
@@ -180,24 +175,23 @@ public class BoxController : MonoBehaviour {
         }
     }
 
-    public bool Clear() {
-        if (given) return false;
+    public void Clear() {
+        this.given = false;
         this.currentColor = new Color(1, 1, 1, 1);
         this.centreElements.Clear();
         this.cornerElements.Clear();
-        this.SetFull("", false);
+        this.SetFull("");
         this.centreMode = false;
-        return true;
     }
 
     private void OnMouseDown() {
-        if (!editable) return;
+        if (!visible) return;
         if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) BoxSelectionManager.instance.ToggleSelected(this);
         else BoxSelectionManager.instance.SetSelected(this);
     }
 
     private void OnMouseEnter() {
-        if (!editable) return;
+        if (!visible) return;
         if (Input.GetMouseButton(0)) BoxSelectionManager.instance.EnsureSelected(this);
     }
 

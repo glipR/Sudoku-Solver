@@ -8,6 +8,7 @@ public class BoardSerializer {
     public class SerializedBox {
 
         public bool given;
+        public bool visible;
         public string answer;
         public int posx;
         public int posy;
@@ -17,12 +18,14 @@ public class BoardSerializer {
             answer = bc.currentVisibleFull;
             posx = bc.position.x;
             posy = bc.position.y;
+            visible = bc.visible;
         }
 
         public void DeserializeToBox(ref BoxController bc) {
             bc.position = (posx, posy);
+            VisualBoardController.instance.Clear(bc.position.x, bc.position.y, false);
             bc.given = given;
-            VisualBoardController.instance.Clear(bc.position.x, bc.position.y);
+            bc.visible = visible;
             VisualBoardController.instance.SetFull(bc.position.x, bc.position.y, answer, false);
         }
     }
