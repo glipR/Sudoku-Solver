@@ -176,13 +176,15 @@ public class VisualBoardController : MonoBehaviour {
     public void AddRowNumber(int i, string result, bool top) {
         RectTransform box = Instantiate(BoxObject, boxCanvas.transform).GetComponent<RectTransform>();
         generatedObjects.Add(box.gameObject);
+        float newXLength = smallLineLengths.x - thinWidthV;
+        float newYLength = (lineDimensions.y - 2*thickWidthV) / (float)sudoku.settings.numVertical;
         box.anchoredPosition = new Vector2(
-            (top ? margin / 2f * backdropDimensions.x : backdropDimensions.x - margin * backdropDimensions.x / 2f),
-            -thickWidthV - (smallLineLengths.y - thinWidthV) / 2f - largeLineLengths.y * ((i+1) / (sudoku.settings.numVerticalThicks-1)) - smallLineLengths.y * ((i+1) % (sudoku.settings.numVerticalThicks-1)) - margin
+            (top ? margin * backdropDimensions.x - newXLength/2f : backdropDimensions.x - margin * backdropDimensions.x + newXLength/2f),
+            -margin * backdropDimensions.y - thickWidthV - newYLength/2f - newYLength * i
         );
         box.gameObject.name = "RowNum " + i;
         var bc = box.gameObject.GetComponent<BoxController>();
-        bc.SetSize(new Vector2(smallLineLengths.x - thinWidthH, smallLineLengths.y - thinWidthV));
+        bc.SetSize(new Vector2(newXLength, newYLength));
         bc.SetFull(result, false);
         bc.position = (i, top ? BoxController.topBox : BoxController.botBox);
         lineBoxes[0, top ? 1 : 0, i] = bc;
@@ -191,13 +193,15 @@ public class VisualBoardController : MonoBehaviour {
     public void AddColNumber(int j, string result, bool top) {
         RectTransform box = Instantiate(BoxObject, boxCanvas.transform).GetComponent<RectTransform>();
         generatedObjects.Add(box.gameObject);
+        float newXLength = (lineDimensions.x - 2*thickWidthH) / (float)sudoku.settings.numHorizontal;
+        float newYLength = smallLineLengths.y - thinWidthV;
         box.anchoredPosition = new Vector2(
-            thickWidthH + (smallLineLengths.x - thinWidthH) / 2f + largeLineLengths.x * ((j+1) / (sudoku.settings.numVerticalThicks-1)) + smallLineLengths.x * ((j+1) % (sudoku.settings.numVerticalThicks-1)) + margin,
-            (top ? -margin * backdropDimensions.y / 2f : -backdropDimensions.y + margin * backdropDimensions.y / 2f)
+            thickWidthH + margin * backdropDimensions.x + newXLength/2f + newXLength * j,
+            (top ? -margin * backdropDimensions.y + newYLength/2f : -backdropDimensions.y + margin * backdropDimensions.y - newYLength/2f)
         );
         box.gameObject.name = "ColNum " + j;
         var bc = box.gameObject.GetComponent<BoxController>();
-        bc.SetSize(new Vector2(smallLineLengths.x - thinWidthH, smallLineLengths.y - thinWidthV));
+        bc.SetSize(new Vector2(newXLength, newYLength));
         bc.SetFull(result, false);
         bc.position = (top ? BoxController.topBox : BoxController.botBox, j);
         lineBoxes[1, top ? 1 : 0, j] = bc;
