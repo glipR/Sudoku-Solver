@@ -21,6 +21,8 @@ public static class VariantList {
         List<VariantType> values = new List<VariantType>();
         List<(VariantType var, float s)> scores = new List<(VariantType var, float s)>();
         foreach (VariantType v in System.Enum.GetValues(typeof(VariantType))) {
+            // We don't want to suggest Base - this is always required.
+            if (v == VariantType.Base) continue;
             // Check if searchTerm is subsequence of
             string check = v.ToString().ToLower();
             int stringIndex = 0;

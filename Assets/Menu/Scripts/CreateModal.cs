@@ -8,7 +8,11 @@ using UnityEngine.EventSystems;
 public class CreateModal : MonoBehaviour {
 
     public GameObject VariantSuggestionsPrefab;
+    public GameObject VariantTagPrefab;
     public List<GameObject> VariantSuggestions;
+    public List<GameObject> VariantTagPool = new List<GameObject>();
+
+    private List<VariantList.VariantType> selectedVariants;
 
     private void Awake() {
         var tagInp = transform.Find("Tags").GetComponent<TMP_InputField>();
@@ -29,6 +33,8 @@ public class CreateModal : MonoBehaviour {
             g.SetActive(false);
             VariantSuggestions.Add(g);
         }
+        selectedVariants = new List<VariantList.VariantType>();
+        selectedVariants.Add(VariantList.VariantType.Base);
     }
 
     public void SetTagsDropdown(List<VariantList.VariantType> v) {
@@ -36,6 +42,7 @@ public class CreateModal : MonoBehaviour {
         int i=0;
         foreach (VariantList.VariantType x in v) {
             VariantSuggestions[i].transform.Find("Text").GetComponent<TextMeshProUGUI>().text = x.ToString();
+            VariantSuggestions[i].transform.GetComponent<Button>().onClick.RemoveAllListeners();
             VariantSuggestions[i].transform.GetComponent<Button>().onClick.AddListener(() => ToggleVariant(x));
             VariantSuggestions[i].SetActive(true);
             i++;
@@ -46,6 +53,34 @@ public class CreateModal : MonoBehaviour {
         foreach (GameObject g in VariantSuggestions) g.SetActive(false);
         var tagInp = this.transform.Find("Tags").GetComponent<TMP_InputField>();
         tagInp.text = "";
+        if (selectedVariants.Contains(v)) selectedVariants.Remove(v);
+        else selectedVariants.Add(v);
+        UpdateVisualTags();
+    }
+
+    public void UpdateVisualTags() {
+        int j=0;
+        foreach (var v in selectedVariants) {
+            // Don't show base variant.
+            if (v == VariantList.VariantType.Base) continue;
+            if (VariantTagPool.Count <= j) {
+                var t = Instantiate(VariantTagPrefab, transform);
+                // This positions two tags per line.
+                var rt = t.GetComponent<RectTransform>();
+                if (j % 2 == 1) {
+                    // Translate halfway
+                    rt.localPosition += new Vector3(rt.sizeDelta.x * 1.14f, 0, 0);
+                }
+                rt.localPosition -= new Vector3(0, (j / 2) * rt.sizeDelta.y * 1.2f, 0);
+                t.GetComponentInChildren<TextMeshProUGUI>().text = v.ToString();
+                VariantTagPool.Add(t);
+            } else {
+                VariantTagPool[j].GetComponentInChildren<TextMeshProUGUI>().text = v.ToString();
+                VariantTagPool[j].SetActive(true);
+            }
+            j++;
+        }
+        for (; j<VariantTagPool.Count; j++) VariantTagPool[j].SetActive(false);
     }
 
 }

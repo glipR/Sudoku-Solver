@@ -1271,7 +1271,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   VariantSuggestionsPrefab: {fileID: 1945257187815217290, guid: 42cf5901d9ea2d44ba6cc405eb05d426,
     type: 3}
+  VariantTagPrefab: {fileID: 1200611995515772174, guid: ad165f04ae69af34db9fa50cbe5baa1d,
+    type: 3}
   VariantSuggestions: []
+  VariantTagPool: []
 --- !u!1 &3824738301762828620
 GameObject:
   m_ObjectHideFlags: 0
