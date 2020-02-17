@@ -208,20 +208,22 @@ public class VisualBoardController : MonoBehaviour {
     }
 
     // This will later be handled by a separate selection panel, but for now it's fine.
-    public void SaveBoard() {
+    public void SaveBoard(string filename) {
         var obj = new BoardSerializer.SerializedBoard(this);
-        string fileName = "Testing/board.json";
-        StreamWriter sr = File.CreateText(fileName);
+        filename = "Testing/" + filename;
+        StreamWriter sr = File.CreateText(filename);
         sr.WriteLine(JsonUtility.ToJson(obj));
         sr.Close();
     }
+    public void SaveBoard() { SaveBoard("board.json"); }
 
-    public void LoadBoard() {
-        string fileName = "Testing/board.json";
-        StreamReader sr = File.OpenText(fileName);
+    public void LoadBoard(string filename) {
+        filename = "Testing/" + filename;
+        StreamReader sr = File.OpenText(filename);
         BoardSerializer.SerializedBoard obj = JsonUtility.FromJson<BoardSerializer.SerializedBoard>(sr.ReadToEnd());
         obj.DeserializeToBoard(this);
     }
+    public void LoadBoard() { LoadBoard("board.json"); }
 
     public void SolveBoard() {
         var solved = solver.Solve(sudoku);
@@ -268,7 +270,7 @@ public class VisualBoardController : MonoBehaviour {
         } else if (sceneName == SceneController.MENU) {
             rt.sizeDelta = new Vector2(0, 0);
             Initialise();
-        } else if (sceneName == SceneController.GAME) {
+        } else if (sceneName == SceneController.GAME || sceneName == SceneController.EDIT) {
             float minSize = Mathf.Min(topDim.x*0.8f, topDim.y*0.8f);
             rt.sizeDelta = new Vector2(minSize, minSize);
             rt.anchoredPosition = new Vector2(-topDim.x*0.65f, 0f);

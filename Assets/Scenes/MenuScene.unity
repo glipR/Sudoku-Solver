@@ -308,7 +308,7 @@ GameObject:
   - component: {fileID: 1012505861}
   - component: {fileID: 1012505860}
   m_Layer: 5
-  m_Name: Selection
+  m_Name: SelectionButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -765,7 +765,7 @@ GameObject:
   - component: {fileID: 1474704735}
   - component: {fileID: 1474704734}
   m_Layer: 5
-  m_Name: Create
+  m_Name: CreateButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

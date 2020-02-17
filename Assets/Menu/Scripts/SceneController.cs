@@ -8,6 +8,7 @@ public class SceneController : MonoBehaviour {
     public static string SELECTION = "SelectionScene";
     public static string MENU = "MenuScene";
     public static string GAME = "GameScene";
+    public static string EDIT = "EditScene";
 
     public static SceneController instance;
 
@@ -49,6 +50,10 @@ public class SceneController : MonoBehaviour {
 
     public void LoadGame() {
         StartCoroutine(Load(GAME));
+    }
+
+    public void LoadEdit() {
+        StartCoroutine(Load(EDIT));
     }
 
 }
