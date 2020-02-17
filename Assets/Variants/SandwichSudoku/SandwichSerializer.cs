@@ -13,18 +13,32 @@ public class SandwichSerializer : ISerializer {
 
     public override void Serialize(VisualBoardController vbc) {
         serializedObject = new SerializedObject();
-        serializedObject.boxes = new BoardSerializer.SerializedBox[vbc.lineBoxes.Count];
-        for (int i=0; i<vbc.lineBoxes.Count; i++) serializedObject.boxes[i] = new BoardSerializer.SerializedBox(vbc.lineBoxes[i]);
+        int amount = 0;
+        for (int i=0; i<vbc.sudoku.settings.numHorizontal; i++) {
+            if (vbc.GetBox(i, BoxController.topBox).currentVisibleFull != "") amount++;
+            if (vbc.GetBox(i, BoxController.botBox).currentVisibleFull != "") amount++;
+        }
+        for (int j=0; j<vbc.sudoku.settings.numVertical; j++) {
+            if (vbc.GetBox(BoxController.topBox, j).currentVisibleFull != "") amount++;
+            if (vbc.GetBox(BoxController.botBox, j).currentVisibleFull != "") amount++;
+        }
+        serializedObject.boxes = new BoardSerializer.SerializedBox[amount];
+        amount = 0;
+        for (int i=0; i<vbc.sudoku.settings.numHorizontal; i++) {
+            if (vbc.GetBox(i, BoxController.topBox).currentVisibleFull != "") serializedObject.boxes[amount++] = new BoardSerializer.SerializedBox(vbc.GetBox(i, BoxController.topBox));
+            if (vbc.GetBox(i, BoxController.botBox).currentVisibleFull != "") serializedObject.boxes[amount++] = new BoardSerializer.SerializedBox(vbc.GetBox(i, BoxController.botBox));
+        }
+        for (int j=0; j<vbc.sudoku.settings.numVertical; j++) {
+            if (vbc.GetBox(BoxController.topBox, j).currentVisibleFull != "") serializedObject.boxes[amount++] = new BoardSerializer.SerializedBox(vbc.GetBox(BoxController.topBox, j));
+            if (vbc.GetBox(BoxController.botBox, j).currentVisibleFull != "") serializedObject.boxes[amount++] = new BoardSerializer.SerializedBox(vbc.GetBox(BoxController.botBox, j));
+        }
         serializiationString = JsonUtility.ToJson(serializedObject);
     }
 
     public override void DeserializeToBoard(VisualBoardController vbc) {
         serializedObject = JsonUtility.FromJson<SerializedObject>(serializiationString);
         foreach (BoardSerializer.SerializedBox bc in serializedObject.boxes) {
-            if (bc.posx == BoxController.topBox) vbc.AddColNumber(bc.posy, bc.answer, true);
-            else if (bc.posx == BoxController.botBox) vbc.AddColNumber(bc.posy, bc.answer, false);
-            else if (bc.posy == BoxController.topBox) vbc.AddRowNumber(bc.posx, bc.answer, true);
-            else if (bc.posy == BoxController.botBox) vbc.AddRowNumber(bc.posx, bc.answer, false);
+            vbc.SetFull(bc.posx, bc.posy, bc.answer, false);
         }
     }
 

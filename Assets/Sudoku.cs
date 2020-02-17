@@ -26,6 +26,7 @@ public class Sudoku {
 
     public SudokuSettings settings;
     public BoardSerializer.SerializedBox[] boxes;
+    public BoardSerializer.SerializedBox[] lineBoxes;
 
     public static Sudoku BasicSudoku() {
         Sudoku s = new Sudoku();
@@ -48,7 +49,32 @@ public class Sudoku {
 
     public void LoadBoxes() {
         boxes = new BoardSerializer.SerializedBox[settings.numHorizontal * settings.numVertical];
-        for (int i=0; i<settings.numHorizontal; i++) for (int j=0; j<settings.numVertical; j++) boxes[i*settings.numVertical+j] = new BoardSerializer.SerializedBox(VisualBoardController.instance.boxes[i, j]);
+        int lineSize = Mathf.Max(settings.numHorizontal, settings.numVertical);
+        lineBoxes = new BoardSerializer.SerializedBox[4*lineSize];
+        for (int i=0; i<settings.numHorizontal; i++) for (int j=0; j<settings.numVertical; j++)
+            boxes[i*settings.numVertical+j] = new BoardSerializer.SerializedBox(VisualBoardController.instance.boxes[i, j]);
+        if (settings.lineNumbers) {
+            for (int i=0; i<2; i++) for (int j=0; j<2; j++) {
+                if (i == 0) for (int k=0; k<settings.numVertical; k++) {
+                    lineBoxes[2*i*lineSize + j*lineSize + k] = new BoardSerializer.SerializedBox(VisualBoardController.instance.lineBoxes[i, j, k]);
+                } else for (int k=0; k<settings.numHorizontal; k++) {
+                    lineBoxes[2*i*lineSize + j*lineSize + k] = new BoardSerializer.SerializedBox(VisualBoardController.instance.lineBoxes[i, j, k]);
+                }
+            }
+        }
+    }
+
+    public void SetBoxAnswer(int i, int j, string ans) {
+        int lineSize = Mathf.Max(settings.numHorizontal, settings.numVertical);
+        if (i == BoxController.topBox || i == BoxController.botBox) {
+            lineBoxes[2*lineSize + lineSize * (i == BoxController.topBox ? 1 : 0) + j].answer = ans;
+            return;
+        }
+        if (j == BoxController.topBox || j == BoxController.botBox) {
+            lineBoxes[lineSize * (j == BoxController.topBox ? 1 : 0) + i].answer = ans;
+            return;
+        }
+        boxes[i*settings.numVertical + j].answer = ans;
     }
 
     public int MapEntry(string s) {

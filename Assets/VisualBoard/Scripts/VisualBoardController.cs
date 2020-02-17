@@ -51,7 +51,7 @@ public class VisualBoardController : MonoBehaviour {
 
     // Publically accessible boxes.
     public BoxController[,] boxes;
-    public List<BoxController> lineBoxes = new List<BoxController>();
+    public BoxController[,,] lineBoxes;
     public BoardSolver solver = new BoardSolver();
     public Sudoku sudoku = Sudoku.BasicSudoku();
     public BoardSerializer.SerializedBoard startState;
@@ -136,6 +136,10 @@ public class VisualBoardController : MonoBehaviour {
 
     private void GenerateBoxes() {
         boxes = new BoxController[sudoku.settings.numHorizontal, sudoku.settings.numVertical];
+        if (sudoku.settings.lineNumbers) {
+            lineBoxes = new BoxController[2, 2, Mathf.Max(sudoku.settings.numHorizontal, sudoku.settings.numVertical)];
+            AddRowsAndCols();
+        }
         for (int thickH=0; thickH < sudoku.settings.numHorizontalThicks-1; thickH++) {
             for (int thickV=0; thickV < sudoku.settings.numVerticalThicks-1; thickV++) {
                 for (int thinH=0; thinH < sudoku.settings.numHorizontalThins+1; thinH++) {
@@ -158,6 +162,17 @@ public class VisualBoardController : MonoBehaviour {
         }
     }
 
+    public void AddRowsAndCols() {
+        for (int i=0; i<sudoku.settings.numHorizontal; i++) {
+            AddColNumber(i, "", true);
+            AddColNumber(i, "", false);
+        }
+        for (int i=0; i<sudoku.settings.numVertical; i++) {
+            AddRowNumber(i, "", true);
+            AddRowNumber(i, "", false);
+        }
+    }
+
     public void AddRowNumber(int i, string result, bool top) {
         RectTransform box = Instantiate(BoxObject, boxCanvas.transform).GetComponent<RectTransform>();
         generatedObjects.Add(box.gameObject);
@@ -169,9 +184,8 @@ public class VisualBoardController : MonoBehaviour {
         var bc = box.gameObject.GetComponent<BoxController>();
         bc.SetSize(new Vector2(smallLineLengths.x - thinWidthH, smallLineLengths.y - thinWidthV));
         bc.SetFull(result, false);
-        bc.SetUneditable();
         bc.position = (i, top ? BoxController.topBox : BoxController.botBox);
-        lineBoxes.Add(bc);
+        lineBoxes[0, top ? 1 : 0, i] = bc;
     }
 
     public void AddColNumber(int j, string result, bool top) {
@@ -185,9 +199,8 @@ public class VisualBoardController : MonoBehaviour {
         var bc = box.gameObject.GetComponent<BoxController>();
         bc.SetSize(new Vector2(smallLineLengths.x - thinWidthH, smallLineLengths.y - thinWidthV));
         bc.SetFull(result, false);
-        bc.SetUneditable();
         bc.position = (top ? BoxController.topBox : BoxController.botBox, j);
-        lineBoxes.Add(bc);
+        lineBoxes[1, top ? 1 : 0, j] = bc;
     }
 
     // This will later be handled by a separate selection panel, but for now it's fine.
@@ -232,6 +245,8 @@ public class VisualBoardController : MonoBehaviour {
 
     public void ResetView() {
         if (startState.boxes.Length > 0) {
+            // This works I guess
+            Initialise();
             startState.DeserializeToBoard(this);
             Initialise();
             startState.DeserializeToBoard(this);
@@ -258,34 +273,44 @@ public class VisualBoardController : MonoBehaviour {
     }
 
     // Accessing boxes by index
+    public BoxController GetBox(int i, int j) {
+        if (i == BoxController.topBox || i == BoxController.botBox) {
+            return lineBoxes[1, i == BoxController.topBox ? 1 : 0, j];
+        }
+        if (j == BoxController.topBox || j == BoxController.botBox) {
+            return lineBoxes[0, j == BoxController.topBox ? 1 : 0, i];
+        }
+        return boxes[i, j];
+    }
+
     public void SetFull(int i, int j, string s, bool fromUI) {
-        if (boxes[i, j].SetFull(s, fromUI))
-            sudoku.boxes[i*sudoku.settings.numVertical+j].answer = s;
+        if (GetBox(i, j).SetFull(s, fromUI))
+            sudoku.SetBoxAnswer(i, j, s);
     }
 
     public void ToggleCorner(int i, int j, int s) {
-        boxes[i, j].ToggleCorner(s);
+        GetBox(i, j).ToggleCorner(s);
     }
 
     public void ToggleCentre(int i, int j, int s) {
-        boxes[i, j].ToggleCentre(s);
+        GetBox(i, j).ToggleCentre(s);
     }
 
     public void SetColor(int i, int j, Color c) {
-        boxes[i, j].SetColor(c);
+        GetBox(i, j).SetColor(c);
     }
 
     public void SetHighlight(int i, int j, Color c) {
-        boxes[i, j].SetHighlight(c);
+        GetBox(i, j).SetHighlight(c);
     }
 
     public void ResetColor(int i, int j) {
-        boxes[i, j].SetColor(boxes[i, j].currentColor);
+        GetBox(i, j).SetColor(GetBox(i, j).currentColor);
     }
 
     public void Clear(int i, int j) {
-        if (boxes[i, j].Clear())
-            sudoku.boxes[i*sudoku.settings.numVertical+j].answer = "";
+        if (GetBox(i, j).Clear())
+            sudoku.SetBoxAnswer(i, j, "");
     }
 
 }
