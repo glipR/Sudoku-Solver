@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class DrawHandler : MonoBehaviour {
 
+    public static DrawHandler instance;
+
     public GameObject linePrefab;
 
     public GameObject canvas;
@@ -24,6 +26,7 @@ public class DrawHandler : MonoBehaviour {
         canvasDims = canvas.GetComponent<RectTransform>().sizeDelta;
         digitCanvas = GameObject.Find("DigitCanvas");
         digitCanvasDims = digitCanvas.GetComponent<RectTransform>().sizeDelta;
+        instance = this;
     }
 
     private void Update() {
