@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
@@ -81,6 +82,23 @@ public class CreateModal : MonoBehaviour {
             j++;
         }
         for (; j<VariantTagPool.Count; j++) VariantTagPool[j].SetActive(false);
+    }
+
+    public void Submit() {
+        string title = transform.Find("Filename").GetComponent<TMP_InputField>().text;
+        Sudoku s = Sudoku.BasicSudoku();
+        s.variant_strings = new string[selectedVariants.Count];
+        for (int i=0; i<selectedVariants.Count; i++) s.variant_strings[i] = selectedVariants[i].ToString();
+        s.Initialise();
+        s.LoadBoxes();
+        var obj = new BoardSerializer.SerializedBoard(s);
+        string filename = "Testing/" + title + ".json";
+        StreamWriter sr = File.CreateText(filename);
+        sr.WriteLine(JsonUtility.ToJson(obj));
+        sr.Close();
+        VisualBoardController.instance.startState = obj;
+        VisualBoardController.instance.ResetView();
+        SceneController.instance.LoadEdit();
     }
 
 }

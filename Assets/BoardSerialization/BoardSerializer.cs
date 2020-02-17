@@ -49,6 +49,19 @@ public class BoardSerializer {
             }
         }
 
+        public SerializedBoard(Sudoku s) {
+            sudoku = s;
+            boxes = new SerializedBox[sudoku.settings.numHorizontal * sudoku.settings.numVertical];
+            for (int i=0; i<sudoku.settings.numHorizontal; i++) for (int j=0; j<sudoku.settings.numVertical; j++) {
+                boxes[i*sudoku.settings.numVertical+j] = sudoku.boxes[i*sudoku.settings.numVertical + j];
+            }
+            variantSerializations = new string[sudoku.variants.Count];
+            for (int i=0; i<sudoku.variants.Count; i++) {
+                // sudoku.variants[i].serializer.Serialize(vbc);
+                variantSerializations[i] = sudoku.variants[i].serializer.serializiationString;
+            }
+        }
+
         public void DeserializeToBoard(VisualBoardController vbc) {
             vbc.sudoku = sudoku;
             vbc.sudoku.Initialise();
