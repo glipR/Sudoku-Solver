@@ -86,17 +86,15 @@ public class CreateModal : MonoBehaviour {
 
     public void Submit() {
         string title = transform.Find("Filename").GetComponent<TMP_InputField>().text;
-        Sudoku s = Sudoku.BasicSudoku();
-        s.variant_strings = new string[selectedVariants.Count];
-        for (int i=0; i<selectedVariants.Count; i++) s.variant_strings[i] = selectedVariants[i].ToString();
-        s.Initialise();
-        s.LoadBoxes();
+        var variant_strings = new string[selectedVariants.Count];
+        for (int i=0; i<selectedVariants.Count; i++) variant_strings[i] = selectedVariants[i].ToString();
+        Sudoku s = new Sudoku(variant_strings);
         var obj = new BoardSerializer.SerializedBoard(s);
         string filename = "Testing/" + title + ".json";
         StreamWriter sr = File.CreateText(filename);
         sr.WriteLine(JsonUtility.ToJson(obj));
         sr.Close();
-        VisualBoardController.instance.startState = obj;
+        VisualBoardController.instance.sudoku = obj.Deserialized();
         VisualBoardController.instance.ResetView();
         SceneController.instance.LoadEdit();
     }

@@ -22,7 +22,7 @@ public class ListItem : MonoBehaviour {
     }
 
     private void OnMouseDown() {
-        VisualBoardController.instance.startState = board;
+        VisualBoardController.instance.sudoku = board.Deserialized();
         VisualBoardController.instance.ResetView();
         ListController.instance.clicked = true;
     }

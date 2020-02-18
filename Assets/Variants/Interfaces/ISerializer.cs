@@ -7,7 +7,8 @@ public abstract class ISerializer {
 
     public string serializiationString { get; set; }
 
-    public abstract void Serialize(VisualBoardController vbc);
-    public abstract void DeserializeToBoard(VisualBoardController vbc);
+    public abstract void Initialise();
+    public abstract void Serialize(Sudoku s);
+    public abstract void ApplyToBoard(VisualBoardController vbc);
 
 }

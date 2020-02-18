@@ -5,9 +5,12 @@ using UnityEngine;
 public class ThermoSerializer : ISerializer {
 
     public SerializedObject serializedObject;
+    [System.NonSerialized]
     public bool[,,] incoming;
+    [System.NonSerialized]
     public bool[,,] outgoing;
 
+    [System.NonSerialized]
     public static int[,] directions = {
         {0, -1},
         {1, 0},
@@ -33,12 +36,18 @@ public class ThermoSerializer : ISerializer {
         public BoxPair[] dependencies;
     }
 
-    public override void Serialize(VisualBoardController vbc) {
+    public override void Initialise() {
+        serializedObject = new SerializedObject();
+        serializedObject.thermo = new ThermoRules();
+        serializedObject.thermo.dependencies = new ThermoRules.BoxPair[0];
+    }
+
+    public override void Serialize(Sudoku s) {
         serializedObject = new SerializedObject();
         serializiationString = JsonUtility.ToJson(serializedObject);
     }
 
-    public override void DeserializeToBoard(VisualBoardController vbc) {
+    public override void ApplyToBoard(VisualBoardController vbc) {
         serializedObject = JsonUtility.FromJson<SerializedObject>(serializiationString);
         // Find out what to apply to what box.
         // URDL is direction 0123.

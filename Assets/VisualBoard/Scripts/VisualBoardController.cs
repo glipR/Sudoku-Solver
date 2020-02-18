@@ -54,10 +54,10 @@ public class VisualBoardController : MonoBehaviour {
     public BoxController[,,] lineBoxes;
     public BoardSolver solver = new BoardSolver();
     public Sudoku sudoku = Sudoku.BasicSudoku();
-    public BoardSerializer.SerializedBoard startState;
 
     private void Start() {
         instance = this;
+        sudoku = Sudoku.BasicSudoku();
         Initialise();
     }
 
@@ -68,7 +68,6 @@ public class VisualBoardController : MonoBehaviour {
         GenerateDisplayConstants();
         GenerateBorders();
         GenerateBoxes();
-        sudoku.LoadBoxes();
     }
 
     private void GenerateDisplayConstants() {
@@ -209,7 +208,7 @@ public class VisualBoardController : MonoBehaviour {
 
     // This will later be handled by a separate selection panel, but for now it's fine.
     public void SaveBoard(string filename) {
-        var obj = new BoardSerializer.SerializedBoard(this);
+        var obj = new BoardSerializer.SerializedBoard(sudoku);
         filename = "Testing/" + filename;
         StreamWriter sr = File.CreateText(filename);
         sr.WriteLine(JsonUtility.ToJson(obj));
@@ -221,7 +220,8 @@ public class VisualBoardController : MonoBehaviour {
         filename = "Testing/" + filename;
         StreamReader sr = File.OpenText(filename);
         BoardSerializer.SerializedBoard obj = JsonUtility.FromJson<BoardSerializer.SerializedBoard>(sr.ReadToEnd());
-        obj.DeserializeToBoard(this);
+        sudoku = obj.Deserialized();
+        ResetView();
     }
     public void LoadBoard() { LoadBoard("board.json"); }
 
@@ -250,13 +250,8 @@ public class VisualBoardController : MonoBehaviour {
     }
 
     public void ResetView() {
-        if (startState.boxes.Length > 0) {
-            // This works I guess
-            Initialise();
-            startState.DeserializeToBoard(this);
-            Initialise();
-            startState.DeserializeToBoard(this);
-        }
+        Initialise();
+        sudoku.ApplyToBoard(this);
     }
 
     // Viewmodel changes.

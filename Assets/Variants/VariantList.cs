@@ -6,6 +6,7 @@ public class Variant {
     public ISerializer serializer;
     public ISolverSettings solver;
     public ISudokuSettings settings;
+    public VariantList.VariantType type;
 }
 
 public static class VariantList {
@@ -62,6 +63,7 @@ public static class VariantList {
         v.solver = new BaseSolver();
         v.settings = new BaseSettings();
         v.serializer = new BaseSerializer();
+        v.type = VariantType.Base;
         return v;
     }
 
@@ -70,6 +72,7 @@ public static class VariantList {
         v.solver = new SandwichSolver();
         v.settings = new SandwichSettings();
         v.serializer = new SandwichSerializer();
+        v.type = VariantType.Sandwich;
         return v;
     }
 
@@ -78,6 +81,7 @@ public static class VariantList {
         v.solver = new ThermoSolver();
         v.settings = new ThermoSettings();
         v.serializer = new ThermoSerializer();
+        v.type = VariantType.Thermo;
         return v;
     }
 

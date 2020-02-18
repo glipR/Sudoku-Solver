@@ -11,31 +11,36 @@ public class SandwichSerializer : ISerializer {
         public BoardSerializer.SerializedBox[] boxes;
     }
 
-    public override void Serialize(VisualBoardController vbc) {
+    public override void Initialise() {
+        serializedObject = new SerializedObject();
+        serializedObject.boxes = new BoardSerializer.SerializedBox[0];
+    }
+
+    public override void Serialize(Sudoku s) {
         serializedObject = new SerializedObject();
         int amount = 0;
-        for (int i=0; i<vbc.sudoku.settings.numHorizontal; i++) {
-            if (vbc.GetBox(i, BoxController.topBox).currentVisibleFull != "") amount++;
-            if (vbc.GetBox(i, BoxController.botBox).currentVisibleFull != "") amount++;
+        for (int i=0; i<s.settings.numHorizontal; i++) {
+            if (s.GetBox(i, BoxController.topBox).answer != "") amount++;
+            if (s.GetBox(i, BoxController.botBox).answer != "") amount++;
         }
-        for (int j=0; j<vbc.sudoku.settings.numVertical; j++) {
-            if (vbc.GetBox(BoxController.topBox, j).currentVisibleFull != "") amount++;
-            if (vbc.GetBox(BoxController.botBox, j).currentVisibleFull != "") amount++;
+        for (int j=0; j<s.settings.numVertical; j++) {
+            if (s.GetBox(BoxController.topBox, j).answer != "") amount++;
+            if (s.GetBox(BoxController.botBox, j).answer != "") amount++;
         }
         serializedObject.boxes = new BoardSerializer.SerializedBox[amount];
         amount = 0;
-        for (int i=0; i<vbc.sudoku.settings.numHorizontal; i++) {
-            if (vbc.GetBox(i, BoxController.topBox).currentVisibleFull != "") serializedObject.boxes[amount++] = new BoardSerializer.SerializedBox(vbc.GetBox(i, BoxController.topBox));
-            if (vbc.GetBox(i, BoxController.botBox).currentVisibleFull != "") serializedObject.boxes[amount++] = new BoardSerializer.SerializedBox(vbc.GetBox(i, BoxController.botBox));
+        for (int i=0; i<s.settings.numHorizontal; i++) {
+            if (s.GetBox(i, BoxController.topBox).answer != "") serializedObject.boxes[amount++] = s.GetBox(i, BoxController.topBox);
+            if (s.GetBox(i, BoxController.botBox).answer != "") serializedObject.boxes[amount++] = s.GetBox(i, BoxController.botBox);
         }
-        for (int j=0; j<vbc.sudoku.settings.numVertical; j++) {
-            if (vbc.GetBox(BoxController.topBox, j).currentVisibleFull != "") serializedObject.boxes[amount++] = new BoardSerializer.SerializedBox(vbc.GetBox(BoxController.topBox, j));
-            if (vbc.GetBox(BoxController.botBox, j).currentVisibleFull != "") serializedObject.boxes[amount++] = new BoardSerializer.SerializedBox(vbc.GetBox(BoxController.botBox, j));
+        for (int j=0; j<s.settings.numVertical; j++) {
+            if (s.GetBox(BoxController.topBox, j).answer != "") serializedObject.boxes[amount++] = s.GetBox(BoxController.topBox, j);
+            if (s.GetBox(BoxController.botBox, j).answer != "") serializedObject.boxes[amount++] = s.GetBox(BoxController.botBox, j);
         }
         serializiationString = JsonUtility.ToJson(serializedObject);
     }
 
-    public override void DeserializeToBoard(VisualBoardController vbc) {
+    public override void ApplyToBoard(VisualBoardController vbc) {
         serializedObject = JsonUtility.FromJson<SerializedObject>(serializiationString);
         foreach (BoardSerializer.SerializedBox bc in serializedObject.boxes) {
             vbc.SetFull(bc.posx, bc.posy, bc.answer, false);
