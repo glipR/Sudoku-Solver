@@ -5,7 +5,8 @@ using UnityEngine;
 public class BaseSerializer : ISerializer {
 
     public override void Initialise() {}
-    public override void Serialize(Sudoku s) {}
+    public override string Serialize(Sudoku s) { return ""; }
+    public override void Deserialize() {}
     public override void ApplyToBoard(VisualBoardController vbc) {}
 
 }

@@ -24,6 +24,7 @@ public class ListItem : MonoBehaviour {
     private void OnMouseDown() {
         VisualBoardController.instance.sudoku = board.Deserialized();
         VisualBoardController.instance.ResetView();
+        VisualBoardController.instance.boardName = TitleField.text;
         ListController.instance.clicked = true;
     }
 

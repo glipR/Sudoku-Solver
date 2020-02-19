@@ -123,6 +123,14 @@ public class Sudoku {
         return null;
     }
 
+    public void SetSerializer(string s, ISerializer serializer) {
+        for (int i=0; i<variant_strings.Length; i++) if (variant_strings[i] == s) {
+            variants[i].serializer = serializer;
+            return;
+        }
+        Debug.Log("Variant " + s + " not found");
+    }
+
     public Sudoku (string[] strings) {
         variant_strings = strings;
         GenerateVariants();

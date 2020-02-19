@@ -16,7 +16,7 @@ public class SandwichSerializer : ISerializer {
         serializedObject.boxes = new BoardSerializer.SerializedBox[0];
     }
 
-    public override void Serialize(Sudoku s) {
+    public override string Serialize(Sudoku s) {
         serializedObject = new SerializedObject();
         int amount = 0;
         for (int i=0; i<s.settings.numHorizontal; i++) {
@@ -37,11 +37,15 @@ public class SandwichSerializer : ISerializer {
             if (s.GetBox(BoxController.topBox, j).answer != "") serializedObject.boxes[amount++] = s.GetBox(BoxController.topBox, j);
             if (s.GetBox(BoxController.botBox, j).answer != "") serializedObject.boxes[amount++] = s.GetBox(BoxController.botBox, j);
         }
-        serializiationString = JsonUtility.ToJson(serializedObject);
+        serializationString = JsonUtility.ToJson(serializedObject);
+        return serializationString;
+    }
+
+    public override void Deserialize() {
+        serializedObject = JsonUtility.FromJson<SerializedObject>(serializationString);
     }
 
     public override void ApplyToBoard(VisualBoardController vbc) {
-        serializedObject = JsonUtility.FromJson<SerializedObject>(serializiationString);
         foreach (BoardSerializer.SerializedBox bc in serializedObject.boxes) {
             vbc.SetFull(bc.posx, bc.posy, bc.answer, false);
         }

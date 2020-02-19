@@ -96,6 +96,7 @@ public class CreateModal : MonoBehaviour {
         sr.Close();
         VisualBoardController.instance.sudoku = obj.Deserialized();
         VisualBoardController.instance.ResetView();
+        VisualBoardController.instance.boardName = title;
         SceneController.instance.LoadEdit();
     }
 

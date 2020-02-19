@@ -48,8 +48,7 @@ public class BoardSerializer {
             sudoku = s;
             variantSerializations = new string[sudoku.variants.Count];
             for (int i=0; i<sudoku.variants.Count; i++) {
-                sudoku.variants[i].serializer.Serialize(s);
-                variantSerializations[i] = sudoku.variants[i].serializer.serializiationString;
+                variantSerializations[i] = sudoku.variants[i].serializer.Serialize(s);
             }
         }
 
@@ -58,7 +57,8 @@ public class BoardSerializer {
             sudoku.GenerateVariants();
             sudoku.Initialise();
             for (int i=0; i<sudoku.variants.Count; i++) {
-                sudoku.variants[i].serializer.serializiationString = variantSerializations[i];
+                sudoku.variants[i].serializer.serializationString = variantSerializations[i];
+                sudoku.variants[i].serializer.Deserialize();
             }
             return sudoku;
         }

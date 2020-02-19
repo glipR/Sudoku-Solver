@@ -14,6 +14,7 @@ public class BoxController : MonoBehaviour {
 
     [SerializeField]
     public GameObject layerPrefab;
+    public List<GameObject> layers = new List<GameObject>();
 
     public bool visible;
     public (int x, int y) position;
@@ -186,13 +187,13 @@ public class BoxController : MonoBehaviour {
 
     private void OnMouseDown() {
         if (!visible) return;
-        if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) BoxSelectionManager.instance.ToggleSelected(this);
-        else BoxSelectionManager.instance.SetSelected(this);
+        if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) BoxSelectionManager.instance.ToggleSelected.Invoke(this);
+        else BoxSelectionManager.instance.SetSelected.Invoke(this);
     }
 
     private void OnMouseEnter() {
         if (!visible) return;
-        if (Input.GetMouseButton(0)) BoxSelectionManager.instance.EnsureSelected(this);
+        if (Input.GetMouseButton(0)) BoxSelectionManager.instance.EnsureSelected.Invoke(this);
     }
 
     // Overlays and Underlays
@@ -201,6 +202,12 @@ public class BoxController : MonoBehaviour {
         obj.transform.Rotate(Vector3.forward, rotation);
         var img = obj.GetComponent<Image>();
         img.sprite = sprite;
+        layers.Add(obj);
+    }
+
+    public void RemoveUnderlays() {
+        foreach (var g in layers) Destroy(g);
+        layers.Clear();
     }
 
 }

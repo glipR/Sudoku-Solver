@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class BoxSelectionManager : MonoBehaviour {
 
@@ -17,17 +18,33 @@ public class BoxSelectionManager : MonoBehaviour {
 
     public static BoxSelectionManager instance;
     [SerializeField]
-    private Color highlightColor = new Color(0.5f, 1, 1, 0.3f);
+    public Color highlightColor = new Color(0.5f, 1, 1, 0.3f);
 
     private List<(int x, int y)> selected;
     private SelectionVersion currentSelection = SelectionVersion.FULL;
+    public static bool ready = false;
 
     private void Start() {
         instance = this;
         selected = new List<(int x, int y)>();
+        AddListeners();
+        ready = true;
     }
 
-    private void Update() {
+    public void AddListeners() {
+        SetSelected.RemoveAllListeners();
+        SetSelected.AddListener(SetSelectedAction);
+        ToggleSelected.RemoveAllListeners();
+        ToggleSelected.AddListener(ToggleSelectedAction);
+        HandleKeyStrokes.RemoveAllListeners();
+        HandleKeyStrokes.AddListener(HandleKeyStrokesAction);
+        EnsureSelected.RemoveAllListeners();
+        EnsureSelected.AddListener(EnsureSelectedAction);
+    }
+
+    public UnityEvent HandleKeyStrokes = new UnityEvent();
+
+    public void HandleKeyStrokesAction() {
         if (Input.GetKeyDown(KeyCode.LeftArrow)) ShiftSelected((-1, 0));
         if (Input.GetKeyDown(KeyCode.RightArrow)) ShiftSelected((1, 0));
         if (Input.GetKeyDown(KeyCode.UpArrow)) ShiftSelected((0, -1));
@@ -53,7 +70,13 @@ public class BoxSelectionManager : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Backspace)) foreach (var box in selected) VisualBoardController.instance.Clear(box.x, box.y, true);
     }
 
-    public void SetSelected(BoxController select) {
+    private void Update() {
+        HandleKeyStrokes.Invoke();
+    }
+
+    public class BoxControllerEvent : UnityEvent<BoxController> {}
+    public BoxControllerEvent SetSelected = new BoxControllerEvent();
+    public void SetSelectedAction(BoxController select) {
         foreach (var box in selected) {
             VisualBoardController.instance.ResetColor(box.x, box.y);
         }
@@ -88,7 +111,8 @@ public class BoxSelectionManager : MonoBehaviour {
         }
     }
 
-    public void ToggleSelected(BoxController select) {
+    public BoxControllerEvent ToggleSelected = new BoxControllerEvent();
+    public void ToggleSelectedAction(BoxController select) {
         int found = -1;
         for (int i=0; i<selected.Count; i++) if (selected[i] == select.position) found = i;
         if (found == -1) {
@@ -100,7 +124,8 @@ public class BoxSelectionManager : MonoBehaviour {
         }
     }
 
-    public void EnsureSelected(BoxController select) {
+    public BoxControllerEvent EnsureSelected = new BoxControllerEvent();
+    public void EnsureSelectedAction(BoxController select) {
         int found = -1;
         for (int i=0; i<selected.Count; i++) if (selected[i] == select.position) found = i;
         if (found == -1) {

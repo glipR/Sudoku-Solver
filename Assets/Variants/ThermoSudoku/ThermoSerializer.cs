@@ -31,6 +31,12 @@ public class ThermoSerializer : ISerializer {
             public int Y1;
             public int X2;
             public int Y2;
+            public BoxPair(int a1, int b1, int a2, int b2) {
+                X1 = a1;
+                Y1 = b1;
+                X2 = a2;
+                Y2 = b2;
+            }
         }
         // (x1, y1, x2, y2) => x1, y1 must be LARGER than x2, y2. (IE x2, y2 can be a base)
         public BoxPair[] dependencies;
@@ -42,13 +48,16 @@ public class ThermoSerializer : ISerializer {
         serializedObject.thermo.dependencies = new ThermoRules.BoxPair[0];
     }
 
-    public override void Serialize(Sudoku s) {
-        serializedObject = new SerializedObject();
-        serializiationString = JsonUtility.ToJson(serializedObject);
+    public override string Serialize(Sudoku s) {
+        serializationString = JsonUtility.ToJson(serializedObject);
+        return serializationString;
+    }
+
+    public override void Deserialize() {
+        serializedObject = JsonUtility.FromJson<SerializedObject>(serializationString);
     }
 
     public override void ApplyToBoard(VisualBoardController vbc) {
-        serializedObject = JsonUtility.FromJson<SerializedObject>(serializiationString);
         // Find out what to apply to what box.
         // URDL is direction 0123.
         incoming = new bool[vbc.sudoku.settings.numHorizontal, vbc.sudoku.settings.numVertical, 4];

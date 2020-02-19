@@ -54,6 +54,7 @@ public class VisualBoardController : MonoBehaviour {
     public BoxController[,,] lineBoxes;
     public BoardSolver solver = new BoardSolver();
     public Sudoku sudoku = Sudoku.BasicSudoku();
+    public string boardName;
 
     private void Start() {
         instance = this;
@@ -214,10 +215,14 @@ public class VisualBoardController : MonoBehaviour {
         sr.WriteLine(JsonUtility.ToJson(obj));
         sr.Close();
     }
-    public void SaveBoard() { SaveBoard("board.json"); }
+    public void SaveBoard() { SaveBoard(boardName + ".json"); }
 
     public void LoadBoard(string filename) {
         filename = "Testing/" + filename;
+        var subs = filename.Split('.');
+        var newSubs = new string[subs.Length - 1];
+        for (int i=0; i<newSubs.Length; i++) newSubs[i] = subs[i];
+        this.boardName = string.Join(".", newSubs);
         StreamReader sr = File.OpenText(filename);
         BoardSerializer.SerializedBoard obj = JsonUtility.FromJson<BoardSerializer.SerializedBoard>(sr.ReadToEnd());
         sudoku = obj.Deserialized();
@@ -271,6 +276,14 @@ public class VisualBoardController : MonoBehaviour {
             rt.anchoredPosition = new Vector2(-topDim.x*0.65f, 0f);
         }
         ResetView();
+    }
+
+    public void RemoveUnderlays() {
+        for (int i=0; i<sudoku.settings.numHorizontal; i++) {
+            for (int j=0; j<sudoku.settings.numVertical; j++) {
+                GetBox(i, j).RemoveUnderlays();
+            }
+        }
     }
 
     // Accessing boxes by index
