@@ -4,170 +4,215 @@ using UnityEngine;
 
 public class BoardSolver {
 
-    public Sudoku sudoku;
+    public enum SolveResult {
+        Solved,         // Sudoku is solved, final.sudoku and final.possible_values is up to date.
+        Incomplete,     // Solver is inadequate to solve any further, final.sudoku and final.possible_values is up to date.
+        MaybeMultiple,  // Solver has found a single solution, but can't rule out other solutions. final.sudoku and final.possible_values denotes one such solve.
+        Multiple,       // Multiple solutions are possible, final.sudoku shows one such solution.
+        Impossible,     // Sudoku is impossible to solve.
+        Unchanged       // final and original should be exactly the same.
+    }
 
-    bool[,] solved;
-    uint[,] options;
-    uint[,] final_state;
-    List<(int x, int y)> solvedCoords = new List<(int x, int y)>();
+    public class SolveState {
+        public Sudoku sudoku;
+        public List<string>[,] possible_values;
+    }
 
-    public void InitializeSolver(Sudoku beginning_state) {
-        sudoku = beginning_state;
-        sudoku.settings = beginning_state.settings;
-        solved = new bool[sudoku.settings.numHorizontal, sudoku.settings.numVertical];
-        options = new uint[sudoku.settings.numHorizontal, sudoku.settings.numVertical];
-        final_state = new uint[sudoku.settings.numHorizontal, sudoku.settings.numVertical];
+    public SolveState original;
+    public SolveState final;
 
-        for (int i = 0; i < sudoku.settings.numHorizontal; i++) for (int j = 0; j < sudoku.settings.numVertical; j++)
-            {
-                if (sudoku.MapEntry(sudoku.boxes[i * sudoku.settings.numVertical + j].answer) == 0)
-                { // Unknown
-                    options[i, j] = (1u << (int)sudoku.settings.numEntryTypes) - 1;
-                    solved[i, j] = false;
-                    final_state[i, j] = 0;
-                }
-                else
-                { // Given
-                    final_state[i, j] = (uint)sudoku.MapEntry(sudoku.boxes[i * sudoku.settings.numVertical + j].answer);
-                    options[i, j] = 1u << (int)(final_state[i, j] - 1);
-                    solved[i, j] = true;
-                }
+    // Solving options.
+    public class SolveSettings {
+        public bool stopOnFirstSolve;
+        public bool bruteForce;
+    }
+
+    public SolveSettings settings = new SolveSettings();
+
+    public void Initialise(Sudoku s) {
+        original = new SolveState();
+        original.sudoku = s;
+        original.possible_values = new List<string>[s.settings.numHorizontal, s.settings.numVertical];
+        for (int i=0; i<s.settings.numHorizontal; i++) for (int j=0; j<s.settings.numVertical; j++) {
+            if (s.GetBox(i, j).answer == "") {
+                original.possible_values[i, j] = s.AllValues();
             }
-        for (int i = 0; i < sudoku.settings.numHorizontal; i++) for (int j = 0; j < sudoku.settings.numVertical; j++) if (solved[i, j]) PropogateSolve(i, j);
-    }
-
-    public uint[,] Solve(Sudoku beginning_state) {
-        InitializeSolver(beginning_state);
-        if (!ApplyRules(false)) {
-            Debug.Log("Impossible to complete!");
+            else {
+                original.possible_values[i, j] = new List<string>();
+                original.possible_values[i, j].Add(s.GetBox(i, j).answer);
+            }
         }
-        return final_state;
+        final = original;
     }
 
-    public (int x, int y) GetBoxHint(Sudoku beginning_state) {
-        InitializeSolver(beginning_state);
-        if (ApplyRules(true)) {
-            return solvedCoords[0];
+    public void Initialise(SolveState bs, SolveSettings ss) {
+        settings = ss;
+        original = bs;
+        final = bs;
+    }
+
+    public SolveResult Solve() {
+        for (int i=0; i<final.sudoku.settings.numHorizontal; i++) for (int j=0; j<final.sudoku.settings.numVertical; j++) {
+            // Trigger the propogate for all already set vlaues.
+            if (GetValue(i, j) != "") SetValue(i, j, GetValue(i, j));
         }
-        return (-1, -1);
+        SolveResult s = ApplyRules();
+        if (s == SolveResult.Impossible)
+            return s;
+        if (s == SolveResult.Solved)
+            return s;
+        // In any other case, we can continue solving.
+        if (!settings.bruteForce) {
+            return s;
+        }
+        // Find the smallest possible switch box
+        (int x, int y) bestPoint = (-1, -1);
+        int best = final.sudoku.AllValues().Count + 1;
+        for (int i=0; i<final.sudoku.settings.numHorizontal; i++) for (int j=0; j<final.sudoku.settings.numVertical; j++) {
+            if ((final.possible_values[i, j].Count < best) && (final.possible_values[i, j].Count != 1)) {
+                best = final.possible_values[i, j].Count;
+                bestPoint = (i, j);
+            }
+        }
+        // Split on (i, j)
+        int amountSolved = 0;
+        int amountIncomplete = 0;
+        SolveState newFinal = new SolveState();
+        foreach (var k in final.possible_values[bestPoint.x, bestPoint.y]) {
+            BoardSolver bs = new BoardSolver();
+            bs.Initialise(final, settings);
+            var r = bs.Solve();
+            if (r == SolveResult.Solved) {
+                amountSolved ++;
+                newFinal = bs.final;
+            }
+            if (r == SolveResult.Incomplete) {
+                amountIncomplete ++;
+                if (amountSolved == 0) newFinal = bs.final;
+            }
+            if (r == SolveResult.MaybeMultiple) {
+                newFinal = bs.final;
+                amountSolved ++;
+                amountIncomplete ++;
+            }
+            if (r == SolveResult.Multiple) return r;
+            if (r == SolveResult.Impossible) continue;
+        }
+        if ((amountSolved == 0) && (amountIncomplete == 0)) return SolveResult.Impossible;
+        final = newFinal;
+        if (amountSolved > 1) return SolveResult.Multiple;
+        if (amountIncomplete == 0) {
+            return SolveResult.Solved;
+        }
+        if (amountSolved == 0) {
+            return SolveResult.Incomplete;
+        }
+        return SolveResult.MaybeMultiple;
     }
 
-    public bool ApplyRules(bool stopOnFirstSolve) {
+    public void SetValue(int i, int j, string k) {
+        final.possible_values[i, j] = new List<string>();
+        final.possible_values[i, j].Add(k);
+        final.sudoku.SetBoxAnswer(i, j, k);
+        for (int a=0; a<final.sudoku.variants.Count; a++) {
+            final.sudoku.variants[a].solver.PropogateChange(i, j, this);
+        }
+    }
+
+    public bool Allows(int i, int j, string v) {
+        return (final.possible_values[i, j].Contains(v));
+    }
+
+    public SolveResult EnsureNotPossible(int i, int j, string k) {
+        if (Allows(i, j, k)) {
+            final.possible_values[i, j].Remove(k);
+            if (final.possible_values[i, j].Count == 0) return SolveResult.Impossible;
+            if (final.possible_values[i, j].Count == 1) SetValue(i, j, final.possible_values[i, j][0]);
+            return SolveResult.Solved;
+        }
+        return SolveResult.Unchanged;
+    }
+
+    public SolveResult EnsureLarger(int x1, int y1, int x2, int y2) {
+        SolveResult r = SolveResult.Unchanged;
+        int smallest_value = -1;
+        foreach (var s in final.possible_values[x2, y2]) {
+            int res;
+            if (int.TryParse(s, out res))
+                if (smallest_value == -1 || res < smallest_value)
+                    smallest_value = res;
+        }
+        if (smallest_value == -1) return SolveResult.Incomplete;
+        foreach (var s in new List<string>(final.possible_values[x1, y1])) {
+            int res;
+            if (int.TryParse(s, out res))
+                if (smallest_value >= res) {
+                    r = Combine(r, EnsureNotPossible(x1, y1, s));
+                }
+        }
+        // The other way.
+        int largest_value = -1;
+        foreach (var s in final.possible_values[x1, y1]) {
+            int res;
+            if (int.TryParse(s, out res))
+                if (res > largest_value)
+                    largest_value = res;
+        }
+        if (largest_value == -1) return SolveResult.Incomplete;
+        foreach (var s in new List<string>(final.possible_values[x2, y2])) {
+            int res;
+            if (int.TryParse(s, out res))
+                if (largest_value <= res) {
+                    r = Combine(r, EnsureNotPossible(x2, y2, s));
+                }
+        }
+        return r;
+    }
+
+    public SolveResult Combine(SolveResult r1, SolveResult r2) {
+        if (r1 == SolveResult.Impossible || r2 == SolveResult.Impossible) return SolveResult.Impossible;
+        if (r1 == SolveResult.Multiple || r2 == SolveResult.Multiple) return SolveResult.Multiple;
+        if (r1 == SolveResult.Incomplete || r2 == SolveResult.Incomplete) {
+            if (r1 == SolveResult.MaybeMultiple || r2 == SolveResult.MaybeMultiple) return SolveResult.MaybeMultiple;
+            if (r1 == SolveResult.Solved || r2 == SolveResult.Solved) return SolveResult.MaybeMultiple;
+            return SolveResult.Incomplete;
+        }
+        if (r1 == SolveResult.MaybeMultiple || r2 == SolveResult.MaybeMultiple) return SolveResult.MaybeMultiple;
+        if (r1 == SolveResult.Solved || r2 == SolveResult.Solved) return SolveResult.Solved;
+        // Only two pairs of unchanged.
+        return r1;
+    }
+
+    public SolveResult ApplyRules() {
         bool changed = false;
         while (true) {
             changed = false;
-            // Clear all boxes with 1 option.
-            for (int i = 0; i < sudoku.settings.numHorizontal; i++) for (int j = 0; j < sudoku.settings.numVertical; j++) {
-                if (!solved[i, j]) {
-                    if (options[i, j] == 0) {
-                        Debug.Log(i + " " + j);
-                        return false;
-                    }
-                    if ((options[i, j] & (options[i, j] - 1)) == 0) {
-                        changed = true;
-                        uint v;
-                        for (v = 1; v <= sudoku.settings.numEntryTypes; v++) {
-                            if ((options[i, j] & (1u << (int)(v - 1))) != 0) break;
-                        }
-                        SetValue(i, j, v, true);
-                        if (stopOnFirstSolve) return true;
-                    }
-                }
-            }
-            if (changed) continue;
             // Use variants to check box availability.
-            foreach (Variant v in sudoku.variants) {
-                changed = v.solver.RestrictGrid(this);
+            foreach (Variant v in final.sudoku.variants) {
+                SolveResult r = v.solver.RestrictGrid(this);
+                if (r == SolveResult.Impossible) return r;
+                if (r == SolveResult.Unchanged) continue;
+                // Otherwise valid changes have been made
+                changed = true;
             }
             if (!changed) break;
         }
-        return true;
+        for (int i=0; i<final.sudoku.settings.numHorizontal; i++) for (int j=0; j<final.sudoku.settings.numVertical; j++) {
+            if (final.sudoku.GetBox(i, j).answer == "") return SolveResult.Incomplete;
+        }
+        return SolveResult.Solved;
     }
 
-    public List<BoardNotifications.BoardError> CollectErrors(Sudoku beginning_state) {
+    public string GetValue(int i, int j) {
+        return final.sudoku.GetBox(i, j).answer;
+    }
+
+    public List<BoardNotifications.BoardError> CollectErrors(Sudoku state) {
         List<BoardNotifications.BoardError> all_errors = new List<BoardNotifications.BoardError>();
-        InitializeSolver(beginning_state);
-        foreach (Variant v in sudoku.variants) {
+        Initialise(state);
+        foreach (Variant v in original.sudoku.variants) {
             all_errors.AddRange(v.solver.GetErrors(this));
         }
         return all_errors;
     }
-
-    public void PropogateSolve(int i, int j) {
-        if (!solved[i, j]) return;
-        foreach (Variant v in sudoku.variants) {
-            v.solver.PropogateChange(i, j, this);
-        }
-    }
-
-    public bool EnsureNotPossible(int i, int j, uint v) {
-        if (Allows(i, j, v)) {
-            options[i, j] -= 1u << (int)(v - 1);
-            return true;
-        }
-        return false;
-    }
-
-    public bool EnsureLarger(int x1, int y1, int x2, int y2) {
-        int smallest_value = -1;
-        for (int i=1; i<=sudoku.settings.numEntryTypes; i++) {
-            if (Allows(x2, y2, (uint)i)) {
-                smallest_value = i;
-                break;
-            }
-        }
-        if (smallest_value == -1) return false;
-        bool changed = false;
-        for (int i=1; i<=smallest_value; i++) {
-            changed |= EnsureNotPossible(x1, y1, (uint)i);
-        }
-        int largest_value = -1;
-        for (int i=sudoku.settings.numEntryTypes; i>0; i--) {
-            if (Allows(x1, y1, (uint)i)) {
-                largest_value = i;
-                break;
-            }
-        }
-        if (largest_value == -1) return false;
-        for (int i=sudoku.settings.numEntryTypes; i>=largest_value; i--) {
-            changed |= EnsureNotPossible(x2, y2, (uint)i);
-        }
-        return changed;
-    }
-
-    public uint GetValue(int i, int j) {
-        if (!solved[i, j]) return 0;
-        return final_state[i, j];
-    }
-
-    public void SetValue(int i, int j, uint v, bool change) {
-        options[i, j] = 1u << (int)(v - 1);
-        if (change) {
-            solved[i, j] = true;
-            final_state[i, j] = v;
-            solvedCoords.Add((i, j));
-            PropogateSolve(i, j);
-        }
-    }
-
-    public bool Allows(int i, int j, uint v) {
-        return (options[i, j] & (1u << (int)(v - 1))) != 0;
-    }
-
-    public bool Equals(int i, int j, uint v) {
-        return (solved[i, j] && final_state[i, j] == v);
-    }
-
-    public bool Solved(int i, int j) {
-        return solved[i, j];
-    }
-
-    public List<uint> GetOptions(int i, int j) {
-        var res = new List<uint>();
-        for (uint v=1; v<=sudoku.settings.numEntryTypes; v++) {
-            if (Allows(i, j, v)) res.Add(v);
-        }
-        return res;
-    }
-
 }

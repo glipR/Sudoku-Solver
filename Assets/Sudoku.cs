@@ -22,6 +22,7 @@ public class Sudoku {
         public int numEntryTypes;
         // Extra information
         public bool lineNumbers = false;
+        public List<string> BoxValues = new List<string>();
     }
 
     public SudokuSettings settings;
@@ -137,6 +138,10 @@ public class Sudoku {
         Initialise();
         CreateBoxes();
         foreach (Variant v in variants) v.serializer.Initialise();
+    }
+
+    public List<string> AllValues() {
+        return new List<string>(settings.BoxValues);
     }
 
 }

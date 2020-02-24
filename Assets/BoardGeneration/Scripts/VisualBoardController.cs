@@ -231,12 +231,16 @@ public class VisualBoardController : MonoBehaviour {
     public void LoadBoard() { LoadBoard("board.json"); }
 
     public void SolveBoard() {
-        var solved = solver.Solve(sudoku);
-        for (int i=0; i<sudoku.settings.numHorizontal; i++) for (int j=0; j<sudoku.settings.numVertical; j++) if (solved[i, j] != 0){
-            SetFull(i, j, solved[i, j].ToString(), false);
+        solver.Initialise(sudoku);
+        solver.settings.bruteForce = false;
+        var result = solver.Solve();
+        Debug.Log(result);
+        for (int i=0; i<sudoku.settings.numHorizontal; i++) for (int j=0; j<sudoku.settings.numVertical; j++) if (solver.GetValue(i, j) != ""){
+            SetFull(i, j, solver.GetValue(i, j).ToString(), false);
         } else {
-            foreach (uint x in solver.GetOptions(i, j)) {
-                boxes[i, j].ToggleCentre((int)x);
+            boxes[i, j].Clear();
+            foreach (string x in solver.final.possible_values[i, j]) {
+                boxes[i, j].ToggleCentre(int.Parse(x));
             }
         }
     }
@@ -249,9 +253,10 @@ public class VisualBoardController : MonoBehaviour {
     }
 
     public void GetHint() {
-        (int x, int y) hint = solver.GetBoxHint(sudoku);
+        // TODO: Add hint to new solver.
+        /*(int x, int y) hint = solver.GetBoxHint(sudoku);
         if (hint.x == -1) return;
-        boxes[hint.x, hint.y].StartFlash(new Color(1, 0, 1));
+        boxes[hint.x, hint.y].StartFlash(new Color(1, 0, 1));*/
     }
 
     public void ResetView() {

@@ -20,70 +20,76 @@ public class BaseSolver : ISolverSettings {
     }
 
     public override void PropogateChange(int i, int j, BoardSolver bs) {
-        for (int k=0; k<bs.sudoku.settings.numHorizontal; k++) if (k != i) bs.EnsureNotPossible(k, j, bs.GetValue(i, j));
-        for (int k=0; k<bs.sudoku.settings.numVertical; k++) if (k != j) bs.EnsureNotPossible(i, k, bs.GetValue(i, j));
+        for (int k=0; k<bs.final.sudoku.settings.numHorizontal; k++) if (k != i) bs.EnsureNotPossible(k, j, bs.GetValue(i, j));
+        for (int k=0; k<bs.final.sudoku.settings.numVertical; k++) if (k != j) bs.EnsureNotPossible(i, k, bs.GetValue(i, j));
         // Locate the box we are in
-        int boxX = (int)((i / (bs.sudoku.settings.numHorizontalThins + 1)) * (bs.sudoku.settings.numHorizontalThins + 1));
-        int boxY = (int)((j / (bs.sudoku.settings.numVerticalThins + 1)) * (bs.sudoku.settings.numVerticalThins + 1));
-        for (int a=0; a<(bs.sudoku.settings.numHorizontalThins + 1); a++) for (int b=0; b<(bs.sudoku.settings.numVerticalThins + 1); b++) {
+        int boxX = (int)((i / (bs.final.sudoku.settings.numHorizontalThins + 1)) * (bs.final.sudoku.settings.numHorizontalThins + 1));
+        int boxY = (int)((j / (bs.final.sudoku.settings.numVerticalThins + 1)) * (bs.final.sudoku.settings.numVerticalThins + 1));
+        for (int a=0; a<(bs.final.sudoku.settings.numHorizontalThins + 1); a++) for (int b=0; b<(bs.final.sudoku.settings.numVerticalThins + 1); b++) {
             if ((a + boxX != i) || (b + boxY != j)) bs.EnsureNotPossible(a + boxX, b + boxY, bs.GetValue(i, j));
         }
     }
-    public override bool RestrictGrid(BoardSolver bs) {
+    public override BoardSolver.SolveResult RestrictGrid(BoardSolver bs) {
         bool changed = false;
-        for (uint v=1; v<=bs.sudoku.settings.numEntryTypes; v++) {
-            for (int i=0; i<bs.sudoku.settings.numHorizontal; i++) {
+        for (int v=1; v<=9; v++) {
+            for (int i=0; i<bs.final.sudoku.settings.numHorizontal; i++) {
                 int v_located = 0;
-                for (int j=0; j<bs.sudoku.settings.numVertical; j++) {
-                    if (bs.Allows(i, j, v)) v_located ++;
+                for (int j=0; j<bs.final.sudoku.settings.numVertical; j++) {
+                    if (bs.Allows(i, j, v.ToString())) v_located ++;
                 }
+                if (v_located == 0) return BoardSolver.SolveResult.Impossible;
                 if (v_located == 1) {
-                    for (int j=0; j<bs.sudoku.settings.numVertical; j++) {
-                        if (bs.Allows(i, j, v) && bs.GetValue(i, j) != v) {
+                    for (int j=0; j<bs.final.sudoku.settings.numVertical; j++) {
+                        if (bs.Allows(i, j, v.ToString()) && bs.GetValue(i, j) != v.ToString()) {
                             changed = true;
-                            bs.SetValue(i, j, v, false);
+                            bs.SetValue(i, j, v.ToString());
                         }
                     }
                 }
             }
-            for (int j=0; j<bs.sudoku.settings.numVertical; j++) {
+            for (int j=0; j<bs.final.sudoku.settings.numVertical; j++) {
                 int v_located = 0;
-                for (int i=0; i<bs.sudoku.settings.numHorizontal; i++) {
-                    if (bs.Allows(i, j, v)) v_located ++;
+                for (int i=0; i<bs.final.sudoku.settings.numHorizontal; i++) {
+                    if (bs.Allows(i, j, v.ToString())) v_located ++;
                 }
+                if (v_located == 0) return BoardSolver.SolveResult.Impossible;
                 if (v_located == 1) {
-                    for (int i=0; i<bs.sudoku.settings.numHorizontal; i++) {
-                        if (bs.Allows(i, j, v) && bs.GetValue(i, j) != v) {
+                    for (int i=0; i<bs.final.sudoku.settings.numHorizontal; i++) {
+                        if (bs.Allows(i, j, v.ToString()) && bs.GetValue(i, j) != v.ToString()) {
                             changed = true;
-                            bs.SetValue(i, j, v, false);
+                            bs.SetValue(i, j, v.ToString());
                         }
                     }
                 }
             }
-            for (int a=0; a<bs.sudoku.settings.numHorizontal; a+=(int)(bs.sudoku.settings.numHorizontalThins + 1)) {
-                for (int b=0; b<bs.sudoku.settings.numVertical; b+=(int)(bs.sudoku.settings.numVerticalThins + 1)) {
+            for (int a=0; a<bs.final.sudoku.settings.numHorizontal; a+=(int)(bs.final.sudoku.settings.numHorizontalThins + 1)) {
+                for (int b=0; b<bs.final.sudoku.settings.numVertical; b+=(int)(bs.final.sudoku.settings.numVerticalThins + 1)) {
                     // Check for box (a, b)
                     int v_located = 0;
-                    for (int x=0; x<(bs.sudoku.settings.numHorizontalThins + 1); x++) for (int y=0; y<(bs.sudoku.settings.numVerticalThins + 1); y++) if (bs.Allows(a+x, b+y, v)) v_located++;
+                    for (int x=0; x<(bs.final.sudoku.settings.numHorizontalThins + 1); x++) for (int y=0; y<(bs.final.sudoku.settings.numVerticalThins + 1); y++)
+                        if (bs.Allows(a+x, b+y, v.ToString())) v_located++;
+                    if (v_located == 0) return BoardSolver.SolveResult.Impossible;
                     if (v_located == 1) {
-                        for (int x=0; x<(bs.sudoku.settings.numHorizontalThins + 1); x++) for (int y=0; y<(bs.sudoku.settings.numVerticalThins + 1); y++) if (bs.Allows(a+x, b+y, v) && bs.GetValue(a+x, b+y) != v) {
-                            changed = true;
-                            bs.SetValue(a+x, b+y, v, false);
-                        }
+                        for (int x=0; x<(bs.final.sudoku.settings.numHorizontalThins + 1); x++) for (int y=0; y<(bs.final.sudoku.settings.numVerticalThins + 1); y++)
+                            if (bs.Allows(a+x, b+y, v.ToString()) && bs.GetValue(a+x, b+y) != v.ToString()) {
+                                changed = true;
+                                bs.SetValue(a+x, b+y, v.ToString());
+                            }
                     }
                 }
             }
         }
-        return changed;
+        if (changed) return BoardSolver.SolveResult.Solved;
+        return BoardSolver.SolveResult.Unchanged;
     }
 
     public override List<BoardNotifications.BoardError> GetErrors(BoardSolver bs) {
         List<BoardNotifications.BoardError> errors = new List<BoardNotifications.BoardError>();
-        for (uint v=1; v<=bs.sudoku.settings.numEntryTypes; v++) {
-            for (int i=0; i<bs.sudoku.settings.numHorizontal; i++) {
+        for (int v=1; v<=9; v++) {
+            for (int i=0; i<bs.final.sudoku.settings.numHorizontal; i++) {
                 List<(int x, int y)> boxes = new List<(int x, int y)>();
-                for (int j=0; j<bs.sudoku.settings.numVertical; j++) {
-                    if (bs.Equals(i, j, v)) {
+                for (int j=0; j<bs.final.sudoku.settings.numVertical; j++) {
+                    if (bs.GetValue(i, j) == v.ToString()) {
                         boxes.Add((i, j));
                     }
                 }
@@ -91,10 +97,10 @@ public class BaseSolver : ISolverSettings {
                     errors.Add(new BoardNotifications.BoardError(BoardNotifications.ErrorType.COL_INVALID, boxes, "This column can only have a single " + v));
                 }
             }
-            for (int j=0; j<bs.sudoku.settings.numVertical; j++) {
+            for (int j=0; j<bs.final.sudoku.settings.numVertical; j++) {
                 List<(int x, int y)> boxes = new List<(int x, int y)>();
-                for (int i=0; i<bs.sudoku.settings.numHorizontal; i++) {
-                    if (bs.Equals(i, j, v)) {
+                for (int i=0; i<bs.final.sudoku.settings.numHorizontal; i++) {
+                    if (bs.GetValue(i, j) == v.ToString()) {
                         boxes.Add((i, j));
                     }
                 }
@@ -102,13 +108,14 @@ public class BaseSolver : ISolverSettings {
                     errors.Add(new BoardNotifications.BoardError(BoardNotifications.ErrorType.ROW_INVALID, boxes, "This row can only have a single " + v));
                 }
             }
-            for (int a=0; a<bs.sudoku.settings.numHorizontal; a+=(int)(bs.sudoku.settings.numHorizontalThins + 1)) {
-                for (int b=0; b<bs.sudoku.settings.numVertical; b+=(int)(bs.sudoku.settings.numVerticalThins + 1)) {
+            for (int a=0; a<bs.final.sudoku.settings.numHorizontal; a+=(int)(bs.final.sudoku.settings.numHorizontalThins + 1)) {
+                for (int b=0; b<bs.final.sudoku.settings.numVertical; b+=(int)(bs.final.sudoku.settings.numVerticalThins + 1)) {
                     // Check for box (a, b)
                     List<(int x, int y)> boxes = new List<(int x, int y)>();
-                    for (int x=0; x<(bs.sudoku.settings.numHorizontalThins + 1); x++) for (int y=0; y<(bs.sudoku.settings.numVerticalThins + 1); y++) if (bs.Equals(a+x, b+y, v)) {
-                        boxes.Add((a+x, b+y));
-                    }
+                    for (int x=0; x<(bs.final.sudoku.settings.numHorizontalThins + 1); x++) for (int y=0; y<(bs.final.sudoku.settings.numVerticalThins + 1); y++)
+                        if (bs.GetValue(a+x, b+y) == v.ToString()) {
+                            boxes.Add((a+x, b+y));
+                        }
                     if (boxes.Count > 1) {
                         errors.Add(new BoardNotifications.BoardError(BoardNotifications.ErrorType.BOX_INVALID, boxes, "This box can only have a single " + v));
                     }

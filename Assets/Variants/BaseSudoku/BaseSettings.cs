@@ -10,6 +10,7 @@ public class BaseSettings : ISudokuSettings {
         settings.numVerticalThicks = 4;
         settings.numHorizontalThins = 2;
         settings.numVerticalThins = 2;
+        for (int i=1; i<=9; i++) settings.BoxValues.Add(i.ToString());
     }
 
 }
