@@ -265,20 +265,22 @@ public class VisualBoardController : MonoBehaviour {
     }
 
     // Viewmodel changes.
-    public void SetView(string sceneName) {
+    public IEnumerator SetView(string sceneName) {
         var topDim = transform.parent.GetComponent<RectTransform>().sizeDelta;
         var rt = GetComponent<RectTransform>();
-        if (sceneName == SceneController.SELECTION) {
-            float minSize = Mathf.Min(topDim.x/4f, topDim.y/3f);
-            rt.sizeDelta = new Vector2(minSize, minSize);
-            rt.anchoredPosition = new Vector2(-topDim.x/5, topDim.y/4f);
-        } else if (sceneName == SceneController.MENU) {
+        var obj = GameObject.Find("SudokuHolder");
+        if (obj == null) {
             rt.sizeDelta = new Vector2(0, 0);
-            Initialise();
-        } else if (sceneName == SceneController.GAME || sceneName == SceneController.EDIT) {
-            float minSize = Mathf.Min(topDim.x*0.8f, topDim.y*0.8f);
-            rt.sizeDelta = new Vector2(minSize, minSize);
-            rt.anchoredPosition = new Vector2(-topDim.x*0.65f, 0f);
+        } else {
+            float min;
+            while (true) {
+                Vector2 sizes = obj.GetComponent<RectTransform>().sizeDelta;
+                min = Mathf.Min(sizes.x, sizes.y);
+                if (min == 0) yield return new WaitForSeconds(0.01f);
+                else break;
+            }
+            rt.sizeDelta = new Vector2(min, min);
+            this.transform.position = obj.transform.position;
         }
         ResetView();
     }

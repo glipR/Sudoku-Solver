@@ -10,13 +10,13 @@ public class StartUp : MonoBehaviour {
     void Start() {
         instance = this;
         DontDestroyOnLoad(this);
-        OnSceneChanged(SceneController.MENU);
+        StartCoroutine(OnSceneChanged(SceneController.MENU));
     }
 
-    public void OnSceneChanged(string sceneName) {
+    public IEnumerator OnSceneChanged(string sceneName) {
         var canvas = transform.Find("Canvas").GetComponent<Canvas>();
         canvas.worldCamera = Camera.main;
-        VisualBoardController.instance.SetView(sceneName);
+        yield return VisualBoardController.instance.SetView(sceneName);
         if (sceneName == SceneController.MENU) {
             GameObject.Find("CreateButton").GetComponent<Button>().onClick.AddListener(() => {
                 ModalSpawner.instance.SpawnModal(ModalSpawner.ModalType.CREATE);
@@ -47,6 +47,7 @@ public class StartUp : MonoBehaviour {
             GameObject.Find("SolveButton").GetComponent<Button>().onClick.AddListener(VisualBoardController.instance.SolveBoard);
             GameObject.Find("SaveButton").GetComponent<Button>().onClick.AddListener(VisualBoardController.instance.SaveBoard);
         }
+        yield return null;
     }
 
 }

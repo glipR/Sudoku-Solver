@@ -62,13 +62,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.5801887, b: 0.5801887, a: 0.14117648}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, Unity.ugui,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
@@ -78,6 +76,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!61 &3269481858799326418
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -116,6 +115,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5449e3163213b24cbb0b1c9a1b57f07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  board:
+    sudoku:
+      variant_strings: []
+      settings:
+        numHorizontalThicks: 0
+        numVerticalThicks: 0
+        numHorizontalThins: 0
+        numVerticalThins: 0
+        numEntryTypes: 0
+        lineNumbers: 0
+        BoxValues: []
+      boxes: []
+      lineBoxes: []
+    variantSerializations: []
   TitleField: {fileID: 7529913363767566244}
   TagsField: {fileID: 262847843150442825}
 --- !u!1 &2453420282562390164
@@ -181,8 +194,6 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, Unity.ugui,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: New Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0301c54a525997e48b70808e5e99fb11, type: 2}
@@ -339,8 +350,6 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, Unity.ugui,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: Title Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0301c54a525997e48b70808e5e99fb11, type: 2}
@@ -351,8 +360,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4284103659
+  m_fontColor: {r: 0.92156863, g: 0.23137255, b: 0.3529412, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

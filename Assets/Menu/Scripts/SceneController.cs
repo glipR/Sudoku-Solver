@@ -25,7 +25,7 @@ public class SceneController : MonoBehaviour {
         while (!loaded.isDone) {
             yield return null;
         }
-        StartUp.instance.OnSceneChanged(sceneName);
+        yield return StartUp.instance.OnSceneChanged(sceneName);
     }
 
     public IEnumerator BackLoad() {
@@ -36,7 +36,7 @@ public class SceneController : MonoBehaviour {
             while (!loaded.isDone) {
                 yield return null;
             }
-            StartUp.instance.OnSceneChanged(sceneName);
+            yield return StartUp.instance.OnSceneChanged(sceneName);
         }
     }
 

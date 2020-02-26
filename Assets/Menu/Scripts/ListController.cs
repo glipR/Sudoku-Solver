@@ -12,11 +12,19 @@ public class ListController : MonoBehaviour {
 
     public List<string> names = new List<string>();
     public List<BoardSerializer.SerializedBoard> boards = new List<BoardSerializer.SerializedBoard>();
+    private List<ListItem> items = new List<ListItem>();
 
     [SerializeField]
     private GameObject ListTilePrefab = null;
     [SerializeField]
     private GameObject ListHolder = null;
+
+    public Color Background;
+    public Color MainText;
+    public Color SecondaryText;
+    public Color BackgroundSelected;
+    public Color MainTextSelected;
+    public Color SecondaryTextSelected;
 
     private void Start() {
         instance = this;
@@ -32,6 +40,7 @@ public class ListController : MonoBehaviour {
     private void GatherBoards() {
         names.Clear();
         boards.Clear();
+        items.Clear();
         foreach (string s in Directory.GetFiles(boardsDirectory, "*", SearchOption.TopDirectoryOnly)) {
             names.Add(Path.GetFileNameWithoutExtension(s.Substring(boardsDirectory.Length+1)));
             boards.Add(JsonUtility.FromJson<BoardSerializer.SerializedBoard>(File.OpenText(s).ReadToEnd()));
@@ -49,7 +58,16 @@ public class ListController : MonoBehaviour {
             ListItem li = tile.GetComponent<ListItem>();
             li.SetTitle(names[i]);
             li.SetBoard(boards[i]);
+            li.SetColors(Background, MainText, SecondaryText);
+            items.Add(li);
         }
+    }
+
+    public void SetSelected(ListItem li) {
+        foreach (var x in items) {
+            x.SetColors(Background, MainText, SecondaryText);
+        }
+        li.SetColors(BackgroundSelected, MainTextSelected, SecondaryTextSelected);
     }
 
 }
