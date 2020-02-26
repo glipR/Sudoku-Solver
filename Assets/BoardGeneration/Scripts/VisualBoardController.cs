@@ -185,7 +185,7 @@ public class VisualBoardController : MonoBehaviour {
         box.gameObject.name = "RowNum " + i;
         var bc = box.gameObject.GetComponent<BoxController>();
         bc.SetSize(new Vector2(newXLength, newYLength));
-        bc.SetFull(result);
+        bc.SetFull(result, false);
         bc.position = (i, top ? BoxController.topBox : BoxController.botBox);
         lineBoxes[0, top ? 1 : 0, i] = bc;
     }
@@ -202,7 +202,7 @@ public class VisualBoardController : MonoBehaviour {
         box.gameObject.name = "ColNum " + j;
         var bc = box.gameObject.GetComponent<BoxController>();
         bc.SetSize(new Vector2(newXLength, newYLength));
-        bc.SetFull(result);
+        bc.SetFull(result, false);
         bc.position = (top ? BoxController.topBox : BoxController.botBox, j);
         lineBoxes[1, top ? 1 : 0, j] = bc;
     }
@@ -238,9 +238,9 @@ public class VisualBoardController : MonoBehaviour {
         for (int i=0; i<sudoku.settings.numHorizontal; i++) for (int j=0; j<sudoku.settings.numVertical; j++) if (solver.GetValue(i, j) != ""){
             SetFull(i, j, solver.GetValue(i, j).ToString(), false);
         } else {
-            boxes[i, j].Clear();
+            boxes[i, j].Clear(false);
             foreach (string x in solver.final.possible_values[i, j]) {
-                boxes[i, j].ToggleCentre(x);
+                boxes[i, j].ToggleCentre(x, false);
             }
         }
     }
@@ -307,23 +307,23 @@ public class VisualBoardController : MonoBehaviour {
         if (interactionState == InteractionState.VIEWING && fromUI) return;
         if (box.given && interactionState == InteractionState.PLAYING && fromUI) return;
         if (interactionState == InteractionState.EDITING) box.given = true;
-        box.SetFull(s);
+        box.SetFull(s, fromUI);
         sudoku.SetBoxAnswer(i, j, s);
     }
 
-    public void ToggleCorner(int i, int j, string s) {
+    public void ToggleCorner(int i, int j, string s, bool fromUI) {
         var box = GetBox(i, j);
-        box.ToggleCorner(s);
+        box.ToggleCorner(s, fromUI);
     }
 
-    public void ToggleCentre(int i, int j, string s) {
+    public void ToggleCentre(int i, int j, string s, bool fromUI) {
         var box = GetBox(i, j);
-        box.ToggleCentre(s);
+        box.ToggleCentre(s, fromUI);
     }
 
-    public void SetColor(int i, int j, Color c) {
+    public void SetColor(int i, int j, Color c, bool fromUI) {
         var box = GetBox(i, j);
-        box.SetColor(c);
+        box.SetColor(c, fromUI);
     }
 
     public void SetHighlight(int i, int j, Color c) {
@@ -331,16 +331,16 @@ public class VisualBoardController : MonoBehaviour {
         box.SetHighlight(c);
     }
 
-    public void ResetColor(int i, int j) {
+    public void ResetColor(int i, int j, bool fromUI) {
         var box = GetBox(i, j);
-        box.SetColor(box.currentColor);
+        box.SetColor(box.currentColor, fromUI);
     }
 
     public void Clear(int i, int j, bool fromUI) {
         var box = GetBox(i, j);
         if (interactionState == InteractionState.VIEWING && fromUI) return;
         if (interactionState == InteractionState.PLAYING && fromUI && box.given) return;
-        box.Clear();
+        box.Clear(fromUI);
         sudoku.SetBoxAnswer(i, j, "");
     }
 

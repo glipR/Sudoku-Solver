@@ -6,6 +6,44 @@ using TMPro;
 
 public class BoxController : MonoBehaviour {
 
+    public enum ActionType {
+        FULL,
+        CORNER,
+        CENTRE,
+        COLOR
+    }
+    public class BoxState {
+        public Color color;
+        public bool centreMode;
+        public string full;
+        public List<string> corners;
+        public List<string> centres;
+
+        public BoxState(BoxController bc) {
+            color = bc.currentColor;
+            centreMode = bc.centreMode;
+            full = bc.currentFull;
+            corners = bc.cornerElements;
+            centres = bc.centreElements;
+        }
+
+        public void Apply(BoxController bc) {
+            bc.Clear(false);
+            bc.SetColor(color, false);
+            if (centreMode) bc.SetFull(full, false);
+            else {
+                foreach (var x in centres)
+                    bc.ToggleCentre(x, false);
+                foreach (var x in corners)
+                    bc.ToggleCorner(x, false);
+            }
+        }
+    }
+    public class Action {
+        public BoxState prevState;
+        public ActionType type;
+    }
+
     public static int topBox = -1;
     public static int botBox = -2;
 
@@ -27,6 +65,8 @@ public class BoxController : MonoBehaviour {
 
     public bool centreMode;
     public bool given = false;
+
+    public List<Action> prevActions = new List<Action>();
 
     private Vector2[] anchors = {
         new Vector2(0, 0),
@@ -50,7 +90,13 @@ public class BoxController : MonoBehaviour {
         visible = true;
     }
 
-    public void SetColor(Color c) {
+    public void SetColor(Color c, bool actionAble) {
+        if (actionAble) {
+            Action a = new Action();
+            a.type = ActionType.COLOR;
+            a.prevState = new BoxState(this);
+            prevActions.Add(a);
+        }
         currentColor = c;
         var img = transform.Find("ColorCanvas/Image").GetComponent<Image>();
         img.color = c;
@@ -90,7 +136,13 @@ public class BoxController : MonoBehaviour {
         SetHighlight(new Color(0, 0, 0, 0));
     }
 
-    public void SetFull(string s) {
+    public void SetFull(string s, bool actionAble) {
+        if (actionAble) {
+            Action a = new Action();
+            a.type = ActionType.COLOR;
+            a.prevState = new BoxState(this);
+            prevActions.Add(a);
+        }
         currentFull = s;
         var txt = transform.Find("FullNum").GetComponent<TextMeshProUGUI>();
         txt.text = s;
@@ -106,7 +158,13 @@ public class BoxController : MonoBehaviour {
         }
     }
 
-    public void ToggleCentre(string s) {
+    public void ToggleCentre(string s, bool actionAble) {
+        if (actionAble) {
+            Action a = new Action();
+            a.type = ActionType.COLOR;
+            a.prevState = new BoxState(this);
+            prevActions.Add(a);
+        }
         if (given) return;
         int index = centreElements.BinarySearch(s);
         if (index >= 0)
@@ -123,7 +181,13 @@ public class BoxController : MonoBehaviour {
         }
     }
 
-    public void ToggleCorner(string s) {
+    public void ToggleCorner(string s, bool actionAble) {
+        if (actionAble) {
+            Action a = new Action();
+            a.type = ActionType.COLOR;
+            a.prevState = new BoxState(this);
+            prevActions.Add(a);
+        }
         if (given) return;
         int index = cornerElements.BinarySearch(s);
         if (index >= 0)
@@ -192,12 +256,18 @@ public class BoxController : MonoBehaviour {
         }
     }
 
-    public void Clear() {
+    public void Clear(bool actionAble) {
+        if (actionAble) {
+            Action a = new Action();
+            a.type = ActionType.COLOR;
+            a.prevState = new BoxState(this);
+            prevActions.Add(a);
+        }
         this.given = false;
         this.currentColor = new Color(1, 1, 1, 1);
         this.centreElements.Clear();
         this.cornerElements.Clear();
-        this.SetFull("");
+        this.SetFull("", false);
         this.centreMode = false;
     }
 
@@ -224,6 +294,12 @@ public class BoxController : MonoBehaviour {
     public void RemoveUnderlays() {
         foreach (var g in layers) Destroy(g);
         layers.Clear();
+    }
+
+    public void Revert() {
+        if (prevActions.Count == 0) return;
+        prevActions[prevActions.Count-1].prevState.Apply(this);
+        prevActions.RemoveAt(prevActions.Count-1);
     }
 
 }

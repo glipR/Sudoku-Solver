@@ -22,6 +22,7 @@ public class BoxSelectionManager : MonoBehaviour {
 
     private List<(int x, int y)> selected;
     private SelectionVersion currentSelection = SelectionVersion.FULL;
+    private List<List<(int x, int y)> > selections = new List<List<(int x, int y)> >();
     public static bool ready = false;
 
     private void Start() {
@@ -57,17 +58,37 @@ public class BoxSelectionManager : MonoBehaviour {
 
         for (int i=1; i<keyCodes.Length; i++) {
             if (Input.GetKeyDown(keyCodes[i])) {
-                if (currentSelection == SelectionVersion.FULL)
+                if (currentSelection == SelectionVersion.FULL) {
                     foreach (var box in selected) VisualBoardController.instance.SetFull(box.x, box.y, i.ToString(), true);
-                if (currentSelection == SelectionVersion.CORNER)
-                    foreach (var box in selected) VisualBoardController.instance.ToggleCorner(box.x, box.y, i.ToString());
-                if (currentSelection == SelectionVersion.CENTRE)
-                    foreach (var box in selected) VisualBoardController.instance.ToggleCentre(box.x, box.y, i.ToString());
-                if (currentSelection == SelectionVersion.COLOR)
-                    foreach (var box in selected) VisualBoardController.instance.SetColor(box.x, box.y, GetColor(i));
+                    selections.Add(new List<(int x, int y)>(selected));
+                }
+                if (currentSelection == SelectionVersion.CORNER) {
+                    foreach (var box in selected) VisualBoardController.instance.ToggleCorner(box.x, box.y, i.ToString(), true);
+                    selections.Add(new List<(int x, int y)>(selected));
+                }
+                if (currentSelection == SelectionVersion.CENTRE) {
+                    foreach (var box in selected) VisualBoardController.instance.ToggleCentre(box.x, box.y, i.ToString(), true);
+                    selections.Add(new List<(int x, int y)>(selected));
+                }
+                if (currentSelection == SelectionVersion.COLOR) {
+                    foreach (var box in selected) VisualBoardController.instance.SetColor(box.x, box.y, GetColor(i), true);
+                    selections.Add(new List<(int x, int y)>(selected));
+                }
             }
         }
-        if (Input.GetKeyDown(KeyCode.Backspace)) foreach (var box in selected) VisualBoardController.instance.Clear(box.x, box.y, true);
+        if (Input.GetKeyDown(KeyCode.Backspace)) {
+            foreach (var box in selected) VisualBoardController.instance.Clear(box.x, box.y, true);
+            selections.Add(new List<(int x, int y)>(selected));
+        }
+
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Z)) {
+            if (selections.Count != 0) {
+                foreach (var box in selections[selections.Count - 1]) {
+                    VisualBoardController.instance.GetBox(box.x, box.y).Revert();
+                }
+                selections.RemoveAt(selections.Count-1);
+            }
+        }
     }
 
     private void Update() {
@@ -78,7 +99,7 @@ public class BoxSelectionManager : MonoBehaviour {
     public BoxControllerEvent SetSelected = new BoxControllerEvent();
     public void SetSelectedAction(BoxController select) {
         foreach (var box in selected) {
-            VisualBoardController.instance.ResetColor(box.x, box.y);
+            VisualBoardController.instance.ResetColor(box.x, box.y, false);
         }
         selected.Clear();
         selected.Add(select.position);
@@ -87,7 +108,7 @@ public class BoxSelectionManager : MonoBehaviour {
 
     public void ShiftSelected((int x, int y) shift) {
         foreach (var box in selected) {
-            VisualBoardController.instance.ResetColor(box.x, box.y);
+            VisualBoardController.instance.ResetColor(box.x, box.y, false);
         }
         // This needs to be revamped in a separate method on VisualBoardController.
         for (int i=0; i<selected.Count; i++) {
@@ -120,7 +141,7 @@ public class BoxSelectionManager : MonoBehaviour {
             VisualBoardController.instance.SetHighlight(select.position.x, select.position.y, highlightColor);
         } else {
             selected.RemoveAt(found);
-            VisualBoardController.instance.ResetColor(select.position.x, select.position.y);
+            VisualBoardController.instance.ResetColor(select.position.x, select.position.y, false);
         }
     }
 

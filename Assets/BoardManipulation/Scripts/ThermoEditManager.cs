@@ -25,7 +25,7 @@ public class ThermoEditManager : IEditManager {
 
     public void SetSelected(BoxController bc) {
         if (selecting) {
-            VisualBoardController.instance.ResetColor(selected.posx, selected.posy);
+            VisualBoardController.instance.ResetColor(selected.posx, selected.posy, false);
         }
         selecting = true;
         selected = bc.position;
@@ -35,7 +35,7 @@ public class ThermoEditManager : IEditManager {
     public void TryConnectingAndRemove(BoxController bc) {
         if (!selecting) return;
         if (selected.posx == bc.position.x && selected.posy == bc.position.y) {
-            VisualBoardController.instance.ResetColor(selected.posx, selected.posy);
+            VisualBoardController.instance.ResetColor(selected.posx, selected.posy, false);
             selected = (-1, -1);
             selecting = false;
         } else {
@@ -72,7 +72,7 @@ public class ThermoEditManager : IEditManager {
             VisualBoardController.instance.RemoveUnderlays();
             ts.ApplyToBoard(VisualBoardController.instance);
             VisualBoardController.instance.sudoku.SetSerializer(VariantList.VariantType.Thermo.ToString(), ts);
-            VisualBoardController.instance.ResetColor(selected.posx, selected.posy);
+            VisualBoardController.instance.ResetColor(selected.posx, selected.posy, false);
             selected = bc.position;
             VisualBoardController.instance.SetHighlight(selected.posx, selected.posy, BoxSelectionManager.instance.highlightColor);
         }
