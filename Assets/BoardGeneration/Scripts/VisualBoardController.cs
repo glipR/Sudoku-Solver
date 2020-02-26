@@ -308,7 +308,10 @@ public class VisualBoardController : MonoBehaviour {
         var box = GetBox(i, j);
         if (interactionState == InteractionState.VIEWING && fromUI) return;
         if (box.given && interactionState == InteractionState.PLAYING && fromUI) return;
-        if (interactionState == InteractionState.EDITING) box.given = true;
+        if (interactionState == InteractionState.EDITING) {
+            box.given = true;
+            sudoku.GetBox(i, j).given = true;
+        }
         box.SetFull(s, fromUI);
         sudoku.SetBoxAnswer(i, j, s);
     }
@@ -342,6 +345,10 @@ public class VisualBoardController : MonoBehaviour {
         var box = GetBox(i, j);
         if (interactionState == InteractionState.VIEWING && fromUI) return;
         if (interactionState == InteractionState.PLAYING && fromUI && box.given) return;
+        if (interactionState == InteractionState.EDITING) {
+            box.given = false;
+            sudoku.GetBox(i, j).given = false;
+        }
         box.Clear(fromUI);
         sudoku.SetBoxAnswer(i, j, "");
     }
