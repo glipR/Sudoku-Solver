@@ -240,7 +240,7 @@ public class VisualBoardController : MonoBehaviour {
         } else {
             boxes[i, j].Clear();
             foreach (string x in solver.final.possible_values[i, j]) {
-                boxes[i, j].ToggleCentre(int.Parse(x));
+                boxes[i, j].ToggleCentre(x);
             }
         }
     }
@@ -311,12 +311,12 @@ public class VisualBoardController : MonoBehaviour {
         sudoku.SetBoxAnswer(i, j, s);
     }
 
-    public void ToggleCorner(int i, int j, int s) {
+    public void ToggleCorner(int i, int j, string s) {
         var box = GetBox(i, j);
         box.ToggleCorner(s);
     }
 
-    public void ToggleCentre(int i, int j, int s) {
+    public void ToggleCentre(int i, int j, string s) {
         var box = GetBox(i, j);
         box.ToggleCentre(s);
     }

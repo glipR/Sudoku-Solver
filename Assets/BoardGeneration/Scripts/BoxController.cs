@@ -20,8 +20,8 @@ public class BoxController : MonoBehaviour {
     public (int x, int y) position;
     public Color currentColor = new Color(1, 1, 1, 1);
     public string currentFull = "";
-    public List<int> cornerElements;
-    public List<int> centreElements;
+    public List<string> cornerElements = new List<string>();
+    public List<string> centreElements = new List<string>();
 
     public string currentVisibleFull { get { return centreMode ? currentFull : ""; } }
 
@@ -106,14 +106,14 @@ public class BoxController : MonoBehaviour {
         }
     }
 
-    public void ToggleCentre(int e) {
+    public void ToggleCentre(string s) {
         if (given) return;
-        int index = centreElements.BinarySearch(e);
+        int index = centreElements.BinarySearch(s);
         if (index >= 0)
             centreElements.RemoveAt(index);
         else {
             // Insert in Order.
-            centreElements.Insert(~index, e);
+            centreElements.Insert(~index, s);
         }
         string x = "";
         foreach (var v in centreElements) x = x + v.ToString();
@@ -123,19 +123,35 @@ public class BoxController : MonoBehaviour {
         }
     }
 
-    public void ToggleCorner(int e) {
+    public void ToggleCorner(string s) {
         if (given) return;
-        int index = cornerElements.BinarySearch(e);
+        int index = cornerElements.BinarySearch(s);
         if (index >= 0)
             cornerElements.RemoveAt(index);
         else {
             // Insert in Order.
-            cornerElements.Insert(~index, e);
+            cornerElements.Insert(~index, s);
         }
+        string[] ordering = {
+            "1",
+            "12",
+            "123",
+            "1234",
+            "15234",
+            "152364",
+            "1527364",
+            "15278364",
+            "152798364"
+        };
         if (!centreMode)
-        for (int i=0; i<8; i++) {
-            var t = transform.Find("Corner" + (i+1)).GetComponent<TextMeshProUGUI>();
-            t.text = i < cornerElements.Count ? cornerElements[i].ToString() : "";
+        for (int i=0; i<9; i++) {
+            if (i < cornerElements.Count) {
+                var t = transform.Find("Corner" + (ordering[cornerElements.Count-1][i])).GetComponent<TextMeshProUGUI>();
+                t.text = cornerElements[i].ToString();
+            } else {
+                var t = transform.Find("Corner" + (i+1)).GetComponent<TextMeshProUGUI>();
+                t.text = "";
+            }
         }
     }
 

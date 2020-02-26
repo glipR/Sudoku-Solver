@@ -60,9 +60,9 @@ public class BoxSelectionManager : MonoBehaviour {
                 if (currentSelection == SelectionVersion.FULL)
                     foreach (var box in selected) VisualBoardController.instance.SetFull(box.x, box.y, i.ToString(), true);
                 if (currentSelection == SelectionVersion.CORNER)
-                    foreach (var box in selected) VisualBoardController.instance.ToggleCorner(box.x, box.y, i);
+                    foreach (var box in selected) VisualBoardController.instance.ToggleCorner(box.x, box.y, i.ToString());
                 if (currentSelection == SelectionVersion.CENTRE)
-                    foreach (var box in selected) VisualBoardController.instance.ToggleCentre(box.x, box.y, i);
+                    foreach (var box in selected) VisualBoardController.instance.ToggleCentre(box.x, box.y, i.ToString());
                 if (currentSelection == SelectionVersion.COLOR)
                     foreach (var box in selected) VisualBoardController.instance.SetColor(box.x, box.y, GetColor(i));
             }
