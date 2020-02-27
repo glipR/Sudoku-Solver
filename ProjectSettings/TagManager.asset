@@ -45,3 +45,6 @@ TagManager:
   - name: TopCanvas
     uniqueID: 1181882289
     locked: 0
+  - name: Persistent
+    uniqueID: 4242174091
+    locked: 0

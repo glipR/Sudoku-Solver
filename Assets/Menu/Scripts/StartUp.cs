@@ -7,17 +7,21 @@ public class StartUp : MonoBehaviour {
 
     public static StartUp instance;
 
-    void Start() {
+    IEnumerator Start() {
         instance = this;
-        DontDestroyOnLoad(this);
-        StartCoroutine(OnSceneChanged(SceneController.MENU));
+        while (!SceneController.ready) yield return null;
+        while (!VisualBoardController.ready) yield return null;
     }
 
     public IEnumerator OnSceneChanged(string sceneName) {
+        Debug.Log(sceneName);
         var canvas = transform.Find("Canvas").GetComponent<Canvas>();
         canvas.worldCamera = Camera.main;
         yield return VisualBoardController.instance.SetView(sceneName);
         if (sceneName == SceneController.MENU) {
+            GameObject.Find("SelectionButton").GetComponent<Button>().onClick.AddListener(() => {
+                SceneController.instance.LoadSelection();
+            });
             GameObject.Find("CreateButton").GetComponent<Button>().onClick.AddListener(() => {
                 ModalSpawner.instance.SpawnModal(ModalSpawner.ModalType.CREATE);
             });

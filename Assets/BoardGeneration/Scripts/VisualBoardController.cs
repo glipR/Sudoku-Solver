@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class VisualBoardController : MonoBehaviour {
 
@@ -56,10 +57,13 @@ public class VisualBoardController : MonoBehaviour {
     public Sudoku sudoku = Sudoku.BasicSudoku();
     public string boardName;
 
+    public static bool ready = false;
+
     private void Start() {
         instance = this;
         sudoku = Sudoku.BasicSudoku();
         Initialise();
+        ready = true;
     }
 
     public void Initialise() {
@@ -280,7 +284,8 @@ public class VisualBoardController : MonoBehaviour {
                 else break;
             }
             rt.sizeDelta = new Vector2(min, min);
-            this.transform.position = obj.transform.position;
+            this.transform.position = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>().WorldToScreenPoint(obj.transform.position);
+            this.transform.parent.GetComponent<Canvas>().worldCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         }
         ResetView();
     }
@@ -351,6 +356,26 @@ public class VisualBoardController : MonoBehaviour {
         }
         box.Clear(fromUI);
         sudoku.SetBoxAnswer(i, j, "");
+    }
+
+    public void Hide(Transform t) {
+        if (t.childCount > 0) {
+            foreach (Transform child in t) {
+                Hide(child);
+            }
+        }
+        var r = t.gameObject.GetComponent<Image>();
+        if (r != null) r.enabled = false;
+    }
+
+    public void Show(Transform t) {
+        if (t.childCount > 0) {
+            foreach (Transform child in t) {
+                Show(child);
+            }
+        }
+        var r = t.gameObject.GetComponent<Image>();
+        if (r != null) r.enabled = true;
     }
 
 }
