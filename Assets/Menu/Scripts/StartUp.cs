@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class StartUp : MonoBehaviour {
 
@@ -55,6 +56,11 @@ public class StartUp : MonoBehaviour {
             GameObject.Find("HintButton").GetComponent<Button>().onClick.AddListener(VisualBoardController.instance.GetHint);
             GameObject.Find("CheckButton").GetComponent<Button>().onClick.RemoveAllListeners();
             GameObject.Find("CheckButton").GetComponent<Button>().onClick.AddListener(VisualBoardController.instance.GenerateErrors);
+            GameObject.Find("Back").GetComponent<Button>().onClick.RemoveAllListeners();
+            GameObject.Find("Back").GetComponent<Button>().onClick.AddListener(() => {
+                SceneController.instance.Back();
+            });
+            GameObject.Find("TitleText").GetComponent<TextMeshProUGUI>().text = VisualBoardController.instance.boardName;
         } else if (sceneName == SceneController.EDIT) {
             VisualBoardController.instance.interactionState = VisualBoardController.InteractionState.EDITING;
             GameObject.Find("CheckButton").GetComponent<Button>().onClick.RemoveAllListeners();
@@ -63,6 +69,11 @@ public class StartUp : MonoBehaviour {
             GameObject.Find("SolveButton").GetComponent<Button>().onClick.AddListener(VisualBoardController.instance.SolveBoard);
             GameObject.Find("SaveButton").GetComponent<Button>().onClick.RemoveAllListeners();
             GameObject.Find("SaveButton").GetComponent<Button>().onClick.AddListener(VisualBoardController.instance.SaveBoard);
+            GameObject.Find("Back").GetComponent<Button>().onClick.RemoveAllListeners();
+            GameObject.Find("Back").GetComponent<Button>().onClick.AddListener(() => {
+                SceneController.instance.Back();
+            });
+            GameObject.Find("TitleText").GetComponent<TextMeshProUGUI>().text = VisualBoardController.instance.boardName;
         }
         yield return null;
     }
