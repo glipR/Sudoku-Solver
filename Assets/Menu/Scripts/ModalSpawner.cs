@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DigitalRuby.Tween;
 
 public class ModalSpawner : MonoBehaviour {
 
@@ -15,19 +16,20 @@ public class ModalSpawner : MonoBehaviour {
     public void SpawnModal(ModalType t) {
         if (t == ModalType.CREATE) {
             var g = Instantiate(createObject, GameObject.Find("Canvas").transform);
-            StartCoroutine(FlashUp(g));
+            FlashUp(g);
         }
     }
 
-    private IEnumerator FlashUp(GameObject g) {
+    private Vector3Tween FlashUp(GameObject g) {
+        Vector3 change = GameObject.Find("Canvas").GetComponent<RectTransform>().sizeDelta;
+        Vector3 startPos = new Vector3(0, -1f, 0);
+        Vector3 endPos = Vector3.zero;
+        Vector3 diff = endPos - startPos;
         var rt = g.GetComponent<RectTransform>();
-        Vector3 change = new Vector3(0, -GameObject.Find("Canvas").GetComponent<RectTransform>().sizeDelta.y, 0);
-        rt.localPosition += change;
-        for (int i=0; i<30; i++) {
-            rt.localPosition -= change / 30f;
-            yield return new WaitForSeconds(0.005f);
-        }
-        yield return null;
+        return g.gameObject.Tween("FlashModal", startPos, endPos, 0.5f, TweenScaleFunctions.CubicEaseOut, (t) => {
+            Vector3 project = startPos + diff * t.CurrentProgress;
+            rt.localPosition = new Vector3(change.x * project.x, change.y * project.y, change.z * project.z);
+        });
     }
 
     private void Awake() {
