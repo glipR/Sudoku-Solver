@@ -53,15 +53,17 @@ public class SceneController : MonoBehaviour {
     }
 
     public IEnumerator BackLoad() {
-        if (sceneStack.Count > 0) {
-            string sceneName = sceneStack[sceneStack.Count-1];
-            AsyncOperation loaded = SceneManager.LoadSceneAsync(sceneName);
-            sceneStack.RemoveAt(sceneStack.Count-1);
-            while (!loaded.isDone) {
-                yield return null;
-            }
+        if (sceneStack.Count > 1) {
+            string sceneName = sceneStack[sceneStack.Count-2];
+            string currentScene = sceneStack[sceneStack.Count-1];
+            yield return StartCoroutine(Load(sceneName));
+            sceneStack.RemoveRange(sceneStack.Count-3, 2);
             yield return StartUp.instance.OnSceneChanged(sceneName);
         }
+    }
+
+    public Coroutine Back() {
+        return StartCoroutine(BackLoad());
     }
 
     public Coroutine LoadSelection() {
