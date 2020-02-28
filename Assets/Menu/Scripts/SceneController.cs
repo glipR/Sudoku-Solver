@@ -20,6 +20,7 @@ public class SceneController : MonoBehaviour {
 
     IEnumerator Start() {
         instance = this;
+        while (!VisualBoardController.ready) yield return null;
         yield return LoadMenu();
         ready = true;
     }

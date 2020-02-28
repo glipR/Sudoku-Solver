@@ -98,6 +98,7 @@ public class CreateModal : MonoBehaviour {
         VisualBoardController.instance.ResetView();
         VisualBoardController.instance.boardName = title;
         SceneController.instance.LoadEdit();
+        Destroy(this.gameObject);
     }
 
 }

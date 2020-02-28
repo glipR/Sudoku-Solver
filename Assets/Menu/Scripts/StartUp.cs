@@ -14,7 +14,6 @@ public class StartUp : MonoBehaviour {
     }
 
     public IEnumerator OnSceneChanged(string sceneName) {
-        Debug.Log(sceneName);
         var canvas = transform.Find("Canvas").GetComponent<Canvas>();
         canvas.worldCamera = Camera.main;
         yield return VisualBoardController.instance.SetView(sceneName);
