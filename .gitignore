@@ -60,3 +60,7 @@ crashlytics-build.properties
 
 # Testing files to ignore.
 Testing/
+
+# Plugins
+/[Aa]ssets/TextMesh Pro/*
+/[Aa]ssets/Tween/*
